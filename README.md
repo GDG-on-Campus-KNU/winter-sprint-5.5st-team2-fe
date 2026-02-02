@@ -26,13 +26,13 @@ pnpm add -D prettier
 }
 ```
 
-| 옵션 | 값 | 설명 |
-|------|-----|------|
-| `printWidth` | 80 | 한 줄 최대 80자 |
-| `tabWidth` | 2 | 들여쓰기 2칸 |
-| `singleQuote` | true | 작은따옴표 사용 |
+| 옵션            | 값    | 설명                            |
+| --------------- | ----- | ------------------------------- |
+| `printWidth`    | 80    | 한 줄 최대 80자                 |
+| `tabWidth`      | 2     | 들여쓰기 2칸                    |
+| `singleQuote`   | true  | 작은따옴표 사용                 |
 | `trailingComma` | "all" | 가능한 곳에 trailing comma 추가 |
-| `semi` | true | 세미콜론 사용 |
+| `semi`          | true  | 세미콜론 사용                   |
 
 ### 무시할 파일: `.prettierignore`
 
@@ -147,7 +147,33 @@ export default defineConfig({
 
 ---
 
-## 4. package.json 전체 설정
+## 4. Husky (Git Hooks)
+
+**역할:** 커밋 전에 자동으로 lint/format 검사를 실행합니다. 문제가 있으면 커밋이 막힙니다.
+
+### 설치
+
+```bash
+pnpm add -D husky
+pnpm exec husky init
+```
+
+### pre-commit 훅: `.husky/pre-commit`
+
+```bash
+pnpm run lint && pnpm run format:check
+```
+
+커밋 시 ESLint와 Prettier 검사를 통과해야만 커밋이 완료됩니다. 실패 시 `pnpm run fix`로 수정 후 다시 커밋하세요.
+
+### 참고
+
+- 훅 건너뛰기: `git commit --no-verify` (비상시에만)
+- CI 환경: `HUSKY=0` 설정 시 훅 비활성화
+
+---
+
+## 5. package.json 전체 설정
 
 ```json
 {
@@ -156,9 +182,11 @@ export default defineConfig({
   "private": true,
   "type": "module",
   "scripts": {
+    "prepare": "husky",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "fix": "pnpm run lint:fix && pnpm run format",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -168,6 +196,7 @@ export default defineConfig({
     "@eslint/js": "^9.0.0",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.0",
     "prettier": "^3.4.0",
     "vite": "^6.0.0"
   }
@@ -178,7 +207,7 @@ export default defineConfig({
 
 ---
 
-## 5. 한 번에 설치하기
+## 6. 한 번에 설치하기
 
 새 프로젝트에서 위 설정을 적용하려면:
 
@@ -187,20 +216,24 @@ export default defineConfig({
 pnpm init
 
 # 의존성 설치
-pnpm add -D eslint @eslint/js eslint-config-prettier prettier vite
+pnpm add -D eslint @eslint/js eslint-config-prettier prettier husky vite
+
+# Husky 초기화 (Git 저장소 필요)
+pnpm exec husky init
 ```
 
-그 다음 `.prettierrc`, `.prettierignore`, `eslint.config.js`, `vite.config.js`, `index.html`, `src/main.js` 파일을 위 내용대로 생성하면 됩니다.
+그 다음 `.prettierrc`, `.prettierignore`, `eslint.config.js`, `vite.config.js`, `.husky/pre-commit`, `index.html`, `src/main.js` 파일을 위 내용대로 생성하면 됩니다.
 
 ---
 
-## 6. 자주 쓰는 명령어 요약
+## 7. 자주 쓰는 명령어 요약
 
-| 명령어 | 설명 |
-|--------|------|
-| `pnpm run fix` | **ESLint + Prettier 한 번에 적용** (lint:fix + format) |
-| `pnpm run dev` | 개발 서버 실행 |
-| `pnpm run build` | 프로덕션 빌드 |
-| `pnpm run preview` | 빌드 결과 미리보기 |
-| `pnpm run lint` | ESLint 검사 |
-| `pnpm run format:check` | Prettier 포맷 검사 |
+| 명령어                  | 설명                                                     |
+| ----------------------- | -------------------------------------------------------- |
+| `pnpm run fix`          | **ESLint + Prettier 한 번에 적용** (lint:fix + format)   |
+| `pnpm run dev`          | 개발 서버 실행                                           |
+| `pnpm run build`        | 프로덕션 빌드                                            |
+| `pnpm run preview`      | 빌드 결과 미리보기                                       |
+| `pnpm run lint`         | ESLint 검사                                              |
+| `pnpm run format:check` | Prettier 포맷 검사                                       |
+| `git commit`            | Husky: lint + format:check 자동 실행 (실패 시 커밋 차단) |
