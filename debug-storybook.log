@@ -1,0 +1,33 @@
+[21:23:47.405] [INFO] storybook v10.2.8
+[21:23:48.922] [DEBUG] Getting package.json info for C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/package.json...
+[21:23:50.959] [INFO] Starting...
+[21:23:51.361] [DEBUG] Starting preview..
+[21:23:51.422] [WARN] 🚨 Unable to index ./src/component/Layout/CustomButton.stories.jsx:
+  NoMetaError: CSF: missing default export C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/src/component/Layout/CustomButton.stories.jsx (line 1, col 0)
+
+More info: https://storybook.js.org/docs/writing-stories?ref=error#default-export
+    at CsfFile.parse (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/_node-chunks/chunk-R5K6MN7N.js:456:13)
+    at Object.createIndex (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/presets/common-preset.js:1797:81)
+    at async _StoryIndexGenerator.extractStories (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/index.js:5909:23)
+    at async file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/index.js:5830:39
+    at async Promise.all (index 0)
+    at async Promise.all (index 0)
+    at async _StoryIndexGenerator.updateExtracted (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/index.js:5818:5)
+    at async _StoryIndexGenerator.ensureExtracted (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/index.js:5853:5)
+    at async _StoryIndexGenerator.initialize (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/index.js:5814:5)
+    at async file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/presets/common-preset.js:1837:10
+[21:23:51.437] [ERROR] Failed to build the preview
+[21:23:51.439] [ERROR] Error: Unable to index ./src/component/Layout/CustomButton.stories.jsx
+    at _StoryIndexGenerator.getIndexAndStats (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/index.js:6082:15)
+    at async _StoryIndexGenerator.getIndex (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/index.js:6071:13)
+    at async getOptimizeDeps (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/@storybook+builder-vite@10._88a8e1848d8f84e00cd331c6c413b168/node_modules/@storybook/builder-vite/dist/index.js:1862:15)
+    at async createViteServer (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/@storybook+builder-vite@10._88a8e1848d8f84e00cd331c6c413b168/node_modules/@storybook/builder-vite/dist/index.js:1888:19)
+    at async Module.start (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/@storybook+builder-vite@10._88a8e1848d8f84e00cd331c6c413b168/node_modules/@storybook/builder-vite/dist/index.js:1923:17)
+    at async storybookDevServer (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/index.js:7207:83)
+    at async buildOrThrow (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/index.js:4504:12)
+    at async buildDevStandalone (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/core-server/index.js:7577:66)
+    at async withTelemetry (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/_node-chunks/chunk-KIOKJLL5.js:218:12)
+    at async dev (file:///C:/Users/tgu63/GDG_winter/winter-sprint-5.5st-team2-fe/node_modules/.pnpm/storybook@10.2.8_@testing-l_6e29a0f52e82268283cc47a36ac81131/node_modules/storybook/dist/bin/core.js:2734:3)
+[21:23:51.448] [WARN] Broken build, fix the error above.
+You may need to refresh the browser.
+[21:24:00.561] [PROMPT] Would you like to send anonymous crash reports to improve Storybook and fix bugs faster? {"choice":true}
