@@ -1,0 +1,16 @@
+.page {
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px 56px;
+}
+
+.contentWrap {
+  width: 100%;
+  max-width: 1080px;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding-top: 24px;
+  }
+}

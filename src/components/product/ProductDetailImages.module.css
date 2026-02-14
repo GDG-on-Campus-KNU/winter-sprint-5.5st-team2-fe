@@ -1,0 +1,26 @@
+.section {
+  width: 100%;
+  max-width: 780px;
+  margin: 56px auto 0;
+}
+
+.title {
+  margin: 0 0 14px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.imageList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detailImage {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #f3f4f6;
+}

@@ -1,1 +1,10 @@
 node_modules/
+dist/
+.env.local
+.env.*.local
+.pnpm-store/
+*.log
+.DS_Store
+.vscode/
+.idea/
+coverage/
