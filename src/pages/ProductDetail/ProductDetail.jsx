@@ -36,17 +36,25 @@ const ProductDetail = () => {
 
         setProduct({
           id: String(menu?.id ?? id),
-          brand: menu?.brand ?? menu?.category ?? '브랜드',
+          brand: menu?.brand ?? 'GDG SELECT',
+          category: menu?.category ?? '카테고리',
           name: menu?.name ?? '상품명',
+          rating: Number(menu?.rating ?? 4.5),
+          color: menu?.color ?? 'Black',
+          colorHex: menu?.colorHex ?? '#111111',
+          sizes: menu?.sizes ?? ['S', 'M', 'L'],
           originalPrice: Number(menu?.originalPrice ?? menu?.price ?? 0),
           discountRate: Number(menu?.discountRate ?? 0),
           imageUrl: menu?.imageUrl ?? menu?.image ?? fallbackImage,
           description: menu?.description ?? '',
           stock: Number(menu?.stock ?? 0),
           status: menu?.status ?? '',
-          category: menu?.category ?? '',
           available: menu?.available ?? true,
           detailImages: menu?.detailImages ?? menu?.images ?? [],
+          galleryImages: menu?.galleryImages ??
+            menu?.productImages ?? [
+              menu?.imageUrl ?? menu?.image ?? fallbackImage,
+            ],
         });
       } catch (err) {
         if (err.name !== 'AbortError') {

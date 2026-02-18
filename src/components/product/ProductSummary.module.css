@@ -25,6 +25,52 @@
   transform: scale(1.06);
 }
 
+.carouselButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.carouselButtonLeft {
+  left: 12px;
+}
+
+.carouselButtonRight {
+  right: 12px;
+}
+
+.carouselDots {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.carouselDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.carouselDotActive {
+  background: #ffffff;
+}
+
 .wishlistButton {
   position: absolute;
   top: 16px;
@@ -57,12 +103,26 @@
 }
 
 .brand {
-  margin: 0 0 8px;
+  margin: 0 0 2px;
   font-size: 12px;
   font-weight: 700;
   color: #2563eb;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.category {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.rating {
+  margin: 6px 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #f59e0b;
 }
 
 .name {
@@ -115,31 +175,39 @@
   color: #111827;
 }
 
-.sizeList {
-  display: flex;
+.colorTag {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-}
-
-.sizeButton {
-  min-width: 48px;
+  min-height: 38px;
+  padding: 0 14px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  padding: 8px 12px;
-  font-weight: 600;
   background: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.colorSwatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+}
+
+.sizeSelect {
+  width: 100%;
+  max-width: 220px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
-}
-
-.sizeButton:hover {
-  border-color: #111827;
-}
-
-.sizeButtonSelected {
-  border-color: #111827;
-  background: #f3f4f6;
 }
 
 .quantityControl {
@@ -180,16 +248,17 @@
     gap: 24px;
   }
 
+  .carouselButton {
+    width: 30px;
+    height: 30px;
+  }
+
   .name {
     font-size: 24px;
   }
 
   .discountedPrice {
     font-size: 28px;
-  }
-
-  .sizeList {
-    flex-wrap: wrap;
   }
 
   .actionButtons {
