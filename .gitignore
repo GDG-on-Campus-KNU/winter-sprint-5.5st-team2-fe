@@ -1,10 +1,25 @@
+# dependencies
 node_modules/
+.pnpm-store/
+
+# build outputs
 dist/
+storybook-static/
+
+# env files
+.env
 .env.local
 .env.*.local
-.pnpm-store/
+!.env.example
+
+# logs
 *.log
+debug-storybook.log
+
+# test / coverage
+coverage/
+
+# editor / OS
 .DS_Store
 .vscode/
 .idea/
-coverage/
