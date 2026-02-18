@@ -12,6 +12,7 @@ export default function HeroBanner({
 }) {
   const mockProducts = [
     {
+      id: 1,
       imageUrl:
         'https://image.msscdn.net/thumbnails/images/goods_img/20250911/5445378/5445378_17586088969585_big.jpg?w=1200',
       brand: '사일프레이',
@@ -20,6 +21,7 @@ export default function HeroBanner({
       price: 113990,
     },
     {
+      id: 2,
       imageUrl:
         'https://image.msscdn.net/thumbnails/images/goods_img/20251229/5859932/5859932_17670103254685_big.jpg?w=1200',
       brand: '미드나잇 무브',
@@ -28,6 +30,7 @@ export default function HeroBanner({
       price: 73990,
     },
     {
+      id: 3,
       imageUrl:
         'https://image.msscdn.net/thumbnails/images/goods_img/20240117/3800636/3800636_17425227643808_big.jpg?w=1200',
       brand: '게인스보로',
@@ -36,6 +39,7 @@ export default function HeroBanner({
       price: 41500,
     },
     {
+      id: 4,
       imageUrl:
         'https://image.msscdn.net/thumbnails/images/goods_img/20250122/4738347/4738347_17567941187869_big.jpg?w=1200',
       brand: '피지컬 디파트먼트',

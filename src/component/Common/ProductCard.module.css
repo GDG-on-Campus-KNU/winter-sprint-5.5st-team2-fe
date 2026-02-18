@@ -9,9 +9,15 @@
   overflow: hidden;
 }
 
-.brand {
-  font-weight: 700;
+.featured .brand {
   font-size: 14px;
+  font-weight: 700;
+  color: #575757;
+}
+
+.grid .brand {
+  font-size: 12px;
+  font-weight: 700;
   color: #575757;
 }
 
@@ -46,6 +52,8 @@
 
 .grid .name {
   -webkit-line-clamp: 2;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .featured .name {

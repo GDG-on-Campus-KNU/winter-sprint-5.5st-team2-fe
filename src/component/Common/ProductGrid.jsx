@@ -7,13 +7,19 @@ export default function ProductGrid({
   variant = 'grid',
   onCardClick,
 }) {
+  const VARIANTS = {
+    grid: styles.grid,
+    featured: styles.featured,
+  };
+  const variantClass = VARIANTS[variant] || styles.grid;
+
   if (!products.length) return null;
 
   return (
-    <section className={styles.grid}>
-      {products.map((product, index) => (
+    <section className={variantClass}>
+      {products.map((product) => (
         <ProductCard
-          key={index}
+          key={product.id}
           product={product}
           variant={variant}
           onClick={onCardClick}
