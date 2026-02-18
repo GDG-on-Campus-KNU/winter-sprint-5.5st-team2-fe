@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 node_modules/
 dist/
 .env.local
@@ -8,3 +9,30 @@ dist/
 .vscode/
 .idea/
 coverage/
+=======
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build outputs
+dist/
+storybook-static/
+
+# env files
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# logs
+*.log
+debug-storybook.log
+
+# test / coverage
+coverage/
+
+# editor / OS
+.DS_Store
+.vscode/
+.idea/
+>>>>>>> origin/main
