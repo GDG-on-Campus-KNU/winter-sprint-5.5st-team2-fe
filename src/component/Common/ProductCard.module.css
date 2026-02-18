@@ -1,0 +1,57 @@
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.discount {
+  color: #ff4848;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.priceRow {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.price {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.thumbWrap {
+  width: 100%;
+  overflow: hidden;
+}
+
+.thumbWrap img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.grid .name {
+  -webkit-line-clamp: 2;
+}
+
+.featured .name {
+  -webkit-line-clamp: 1;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.grid .thumbWrap {
+  aspect-ratio: 1 / 1;
+}
+
+.featured .thumbWrap {
+  aspect-ratio: 3 / 4;
+}
