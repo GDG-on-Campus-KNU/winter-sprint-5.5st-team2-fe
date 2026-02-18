@@ -9,6 +9,12 @@
   overflow: hidden;
 }
 
+.brand {
+  font-weight: 700;
+  font-size: 14px;
+  color: #575757;
+}
+
 .discount {
   color: #ff4848;
   font-weight: 700;

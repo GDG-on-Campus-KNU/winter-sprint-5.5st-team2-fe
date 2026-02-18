@@ -6,6 +6,7 @@ export default function HeroBanner({
   imageSrc,
   title,
   subtitle,
+  sectionTitle,
   onClick,
   items = [],
 }) {
@@ -54,7 +55,8 @@ export default function HeroBanner({
         </div>
       </section>
 
-      <div className={styles.rightGrid}>
+      <div className={styles.rightArea}>
+        <h2 className={styles.sectionTitle}>{sectionTitle}</h2>
         <ProductGrid products={mockProducts} variant="featured" />
       </div>
     </div>

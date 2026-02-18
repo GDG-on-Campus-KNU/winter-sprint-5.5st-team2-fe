@@ -15,8 +15,17 @@
   cursor: pointer;
 }
 
-.rightGrid {
-  flex: 1;
+.rightArea {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 10px;
+  margin-bottom: 0;
 }
 
 .image {

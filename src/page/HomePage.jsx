@@ -11,7 +11,7 @@ export default function HomePage() {
       <HeroBanner
         imageSrc={BannerImg}
         title="New Collection"
-        subtitle="새로운 S/S 시즌을 경험하다"
+        sectionTitle="새로운 S/S 시즌을 경험하다"
         onClick={() => navigate('/event/ss')}
       />
     </div>
