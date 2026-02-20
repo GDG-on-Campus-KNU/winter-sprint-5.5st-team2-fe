@@ -1,10 +1,9 @@
 /** @type { import('@storybook/react-vite').StorybookConfig } */
 const config = {
-<<<<<<< HEAD
-  stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
-  addons: [],
-=======
-  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  stories: [
+    '../src/**/*.mdx', 
+    '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'
+  ],
   addons: [
     '@chromatic-com/storybook',
     '@storybook/addon-vitest',
@@ -12,7 +11,10 @@ const config = {
     '@storybook/addon-docs',
     '@storybook/addon-onboarding',
   ],
->>>>>>> origin/main
-  framework: '@storybook/react-vite',
+  framework: {
+    name: '@storybook/react-vite',
+    options: {},
+  },
 };
+
 export default config;

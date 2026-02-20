@@ -14,6 +14,9 @@ import { ToastProvider } from './context/ToastContext';
 function App() {
   return (
     <ToastProvider>
+
+function App() {
+  return (
     <BrowserRouter>
       <Layout>
         <Routes>
@@ -30,6 +33,9 @@ function App() {
       </Layout>
     </BrowserRouter>
     </ToastProvider>
+        </Routes>
+      </Layout>
+    </BrowserRouter>
   );
 }
 

@@ -12,11 +12,14 @@ const Layout = ({ children }) => {
 
   const shouldHideFooter = hideFooterPaths.includes(location.pathname);
 
+
+const Layout = ({ children }) => {
   return (
     <div>
       <Header />
       <main className={styles.main}>{children}</main>
       {!shouldHideFooter && <Footer />}
+      <Footer />
     </div>
   );
 };

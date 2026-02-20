@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
 import { FiHeart, FiShoppingCart } from 'react-icons/fi';
+import React, { useEffect, useState } from 'react';
+import {
+  FiChevronLeft,
+  FiChevronRight,
+  FiHeart,
+  FiShoppingCart,
+} from 'react-icons/fi';
 import CommonButton from '../common/CommonButton';
 import styles from './ProductSummary.module.css';
 
@@ -15,6 +22,27 @@ function ProductSummary({
   const [selectedSize, setSelectedSize] = useState(
     sizeOptions[1] ?? sizeOptions[0],
   );
+  const sizeOptions = product.sizes?.length ? product.sizes : ['S', 'M', 'L'];
+  const galleryImages =
+    product.galleryImages?.length > 0
+      ? product.galleryImages
+      : [product.imageUrl];
+  const defaultSize = sizeOptions[0];
+  const colorName = product.color ?? '기본';
+  const colorHex = product.colorHex ?? '#111111';
+
+  const [isWishlist, setIsWishlist] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState(defaultSize);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    setSelectedSize(defaultSize);
+  }, [defaultSize]);
+
+  useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [product.id]);
 
   const discountedPrice = Math.round(
     product.originalPrice * (1 - product.discountRate / 100),
@@ -31,6 +59,46 @@ function ProductSummary({
           alt={product.name}
           className={styles.productImage}
         />
+          src={galleryImages[currentImageIndex]}
+          alt={product.name}
+          className={styles.productImage}
+        />
+        {galleryImages.length > 1 && (
+          <>
+            <button
+              type="button"
+              className={`${styles.carouselButton} ${styles.carouselButtonLeft}`}
+              onClick={() =>
+                setCurrentImageIndex((prev) =>
+                  prev === 0 ? galleryImages.length - 1 : prev - 1,
+                )
+              }
+              aria-label="이전 이미지"
+            >
+              <FiChevronLeft size={20} />
+            </button>
+            <button
+              type="button"
+              className={`${styles.carouselButton} ${styles.carouselButtonRight}`}
+              onClick={() =>
+                setCurrentImageIndex((prev) =>
+                  prev === galleryImages.length - 1 ? 0 : prev + 1,
+                )
+              }
+              aria-label="다음 이미지"
+            >
+              <FiChevronRight size={20} />
+            </button>
+            <div className={styles.carouselDots}>
+              {galleryImages.map((image, index) => (
+                <span
+                  key={`${image}-${index}`}
+                  className={`${styles.carouselDot} ${index === currentImageIndex ? styles.carouselDotActive : ''}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
         <button
           type="button"
           onClick={() => setIsWishlist((prev) => !prev)}
@@ -46,6 +114,8 @@ function ProductSummary({
 
       <div className={styles.content}>
         <p className={styles.brand}>{product.brand}</p>
+        <p className={styles.category}>{product.category}</p>
+        <p className={styles.rating}>★ {product.rating.toFixed(1)}</p>
         <h1 className={styles.name}>{product.name}</h1>
 
         <div className={styles.priceRow}>
@@ -80,6 +150,30 @@ function ProductSummary({
               </button>
             ))}
           </div>
+          <p className={styles.optionLabel}>컬러</p>
+          <div className={styles.colorTag}>
+            <span
+              className={styles.colorSwatch}
+              style={{ backgroundColor: colorHex }}
+              aria-hidden="true"
+            />
+            <span>{colorName}</span>
+          </div>
+        </div>
+
+        <div className={styles.optionSection}>
+          <p className={styles.optionLabel}>사이즈</p>
+          <select
+            className={styles.sizeSelect}
+            value={selectedSize}
+            onChange={(event) => setSelectedSize(event.target.value)}
+          >
+            {sizeOptions.map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className={styles.optionSection}>
