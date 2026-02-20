@@ -1,0 +1,34 @@
+.section {
+  margin: 80px 60px;
+  max-width: 1200px;
+  padding: 40px 0;
+
+  border-top: 1px solid #f1f1f1;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.select {
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.paginationRow {
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
+}

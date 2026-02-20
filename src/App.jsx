@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './component/Layout/Layout';
+import HomePage from './page/HomePage';
 import Layout from './components/Layout/Layout';
 import CartPage from './pages/CartPage/CartPage';
 import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
@@ -20,6 +22,7 @@ function App() {
     <BrowserRouter>
       <Layout>
         <Routes>
+          <Route path="/" element={<HomePage />} />
           <Route path="/" element={<MainPage />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<CartPage />} />
