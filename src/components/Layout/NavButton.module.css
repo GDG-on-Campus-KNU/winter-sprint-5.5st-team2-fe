@@ -1,0 +1,21 @@
+.NavButton {
+  font-size: 16px;
+  line-height: 120%;
+  font-weight: bold;
+
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 15px 20px;
+}
+
+.NavButtonlogin {
+  font-size: 16px;
+  line-height: 120%;
+  color: white;
+
+  background: black;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 5px 5px;
+}
