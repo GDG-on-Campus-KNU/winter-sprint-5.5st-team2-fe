@@ -1,0 +1,9 @@
+.header {
+  position: fixed; /* 화면에 고정시 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  zindex: 1000;
+  background-color: #ffff;
+  borderbottom: 1px solid #eee;
+}

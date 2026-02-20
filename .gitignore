@@ -3,6 +3,16 @@ node_modules/
 *.log
 debug-storybook.log
 nul
+node_modules/
+dist/
+.env.local
+.env.*.local
+.pnpm-store/
+*.log
+.DS_Store
+.vscode/
+.idea/
+coverage/
 # dependencies
 node_modules/
 .pnpm-store/
@@ -28,3 +38,4 @@ coverage/
 .DS_Store
 .vscode/
 .idea/
+

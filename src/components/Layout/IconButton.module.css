@@ -1,0 +1,30 @@
+.IconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  font-size: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 10px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.logoutIconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  font-size: 16px;
+  background: none;
+  border: 1px solid black;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0 10px;
+  line-height: 1;
+  white-space: nowrap;
+}
