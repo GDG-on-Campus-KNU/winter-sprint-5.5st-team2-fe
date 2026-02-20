@@ -5,6 +5,10 @@ export const mockMenus = {
   1: {
     id: '1',
     brand: 'GDG SELECT',
+    name: '미니멀 레더 백팩',
+    originalPrice: 129000,
+    discountRate: 15,
+    imageUrl: fallbackImage,
     category: '가방',
     name: '미니멀 레더 백팩',
     rating: 4.7,
@@ -32,6 +36,7 @@ export const mockMenus = {
   2: {
     id: '2',
     brand: 'GDG SELECT',
+    name: '오버핏 코튼 셔츠',
     category: '상의',
     name: '오버핏 코튼 셔츠',
     rating: 4.4,

@@ -36,6 +36,8 @@ const ProductDetail = () => {
 
         setProduct({
           id: String(menu?.id ?? id),
+          brand: menu?.brand ?? menu?.category ?? '브랜드',
+          name: menu?.name ?? '상품명',
           brand: menu?.brand ?? 'GDG SELECT',
           category: menu?.category ?? '카테고리',
           name: menu?.name ?? '상품명',
@@ -49,6 +51,9 @@ const ProductDetail = () => {
           description: menu?.description ?? '',
           stock: Number(menu?.stock ?? 0),
           status: menu?.status ?? '',
+          category: menu?.category ?? '',
+          available: menu?.available ?? true,
+          detailImages: menu?.detailImages ?? menu?.images ?? [],
           available: menu?.available ?? true,
           detailImages: menu?.detailImages ?? menu?.images ?? [],
           galleryImages: menu?.galleryImages ??
