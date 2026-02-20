@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './RecommendSection.module.css';
-import ProductGrid from '../Common/ProductGrid';
-import Pagination from '../Common/Pagination';
+import ProductGrid from '../common/ProductGrid';
+import Pagination from '../common/Pagination';
 
 const SORT_OPTIONS = [
   { value: 'recommend', label: '추천순' },

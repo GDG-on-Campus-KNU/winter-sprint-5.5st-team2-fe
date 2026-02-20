@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addToCart } from '../../api/cart';
+import { shouldUseMock } from '../../api/client';
 import { getMenuDetail } from '../../api/menus';
 import { createOrder } from '../../api/orders';
-import { shouldUseMock } from '../../api/client';
 import ProductDetailImages from '../../components/product/ProductDetailImages';
 import ProductSummary from '../../components/product/ProductSummary';
 import { fallbackImage, mockMenus } from '../../mocks/menus.mock';
@@ -19,7 +19,8 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (shouldUseMock) {
-      const mockProduct = mockMenus[id] ?? mockMenus[1];
+      const defaultMockProduct = Object.values(mockMenus)[0];
+      const mockProduct = mockMenus[id] ?? defaultMockProduct;
       setProduct(mockProduct);
       setError('');
       setIsLoading(false);
@@ -36,8 +37,6 @@ const ProductDetail = () => {
 
         setProduct({
           id: String(menu?.id ?? id),
-          brand: menu?.brand ?? menu?.category ?? '브랜드',
-          name: menu?.name ?? '상품명',
           brand: menu?.brand ?? 'GDG SELECT',
           category: menu?.category ?? '카테고리',
           name: menu?.name ?? '상품명',
@@ -51,9 +50,6 @@ const ProductDetail = () => {
           description: menu?.description ?? '',
           stock: Number(menu?.stock ?? 0),
           status: menu?.status ?? '',
-          category: menu?.category ?? '',
-          available: menu?.available ?? true,
-          detailImages: menu?.detailImages ?? menu?.images ?? [],
           available: menu?.available ?? true,
           detailImages: menu?.detailImages ?? menu?.images ?? [],
           galleryImages: menu?.galleryImages ??
@@ -100,7 +96,7 @@ const ProductDetail = () => {
         await addToCart(payload);
       }
       navigate('/cart', { state: { payload } });
-    } catch (err) {
+    } catch {
       alert('장바구니 담기에 실패했습니다.');
     } finally {
       setIsSubmitting(false);
@@ -124,7 +120,7 @@ const ProductDetail = () => {
         await createOrder(payload);
       }
       navigate('/checkout', { state: { payload } });
-    } catch (err) {
+    } catch {
       alert('구매 요청에 실패했습니다.');
     } finally {
       setIsSubmitting(false);
