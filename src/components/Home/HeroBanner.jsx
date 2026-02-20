@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './HeroBanner.module.css';
-import ProductGrid from '../Common/ProductGrid';
+import ProductGrid from '../common/ProductGrid';
 
 export default function HeroBanner({
   imageSrc,
@@ -8,7 +8,6 @@ export default function HeroBanner({
   subtitle,
   sectionTitle,
   onClick,
-  items = [],
 }) {
   const mockProducts = [
     {

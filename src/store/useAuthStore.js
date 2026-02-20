@@ -6,16 +6,13 @@ const useAuthStore = create(
     (set) => ({
       isLoggedIn: false,
       user: null,
-      admin:null,
-      login: (userData) => set({ isLoggedIn: true, user: userData }),
-      adminLogin:(adminData) => set({isLoggedIn: true,admin:adminData}),
+      admin: null,
+      login: (userData) =>
+        set({ isLoggedIn: true, user: userData, admin: null }),
+      adminLogin: (adminData) =>
+        set({ isLoggedIn: true, admin: adminData, user: null }),
       logout: () => {
-        set({ isLoggedIn: false, user: null,admin:null });
-      isLoggedIn: true,
-      user: null,
-      login: (userData) => set({ isLoggedIn: true, user: userData }),
-      logout: () => {
-        set({ isLoggedIn: false, user: null });
+        set({ isLoggedIn: false, user: null, admin: null });
       },
     }),
     {

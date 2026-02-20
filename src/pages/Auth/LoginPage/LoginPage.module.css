@@ -1,70 +1,63 @@
 .form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* 가로 중앙 */
-    align-items: center;      /* 세로 중앙 */
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 가로 중앙 */
+  align-items: center; /* 세로 중앙 */
+  width: 100%;
 }
 
 .inputGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 50px;
-    width: 384px;            
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 50px;
+  width: 384px;
 }
 
 .inputGroup input {
-    width: 100%;            
-    height: 44px;
-    box-sizing: border-box;  
-    padding: 0 12px; 
-    border: 1px solid #D7D7D7; 
-    font :16px
-   
-         
+  width: 100%;
+  height: 44px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border: 1px solid #d7d7d7;
+  font: 16px;
 }
 
 .inputbutton {
-    width: 384px;
-    height: 44px;
-    cursor: pointer;
-    background : black;
-    color:white;
-    font-size:18px;
-    font-weight:bold;
+  width: 384px;
+  height: 44px;
+  cursor: pointer;
+  background: black;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
 }
-
-
 
 .autoLoginWrapper label {
-    font-size:14px;
-    color:#575757;
-    
+  font-size: 14px;
+  color: #575757;
 }
-
 
 .autoLoginWrapper {
-    display: flex;
-    align-items: center;
-    height:auto;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  height: auto;
+  gap: 8px;
 }
 
+.autoLoginWrapper input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px !important;
+  height: 20px !important;
+  padding: 0;
 
-.autoLoginWrapper input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px!important;
-    height: 20px !important;
-    padding:0;
-
-    flex-shrink :0;
-    border: 1px solid #D7D7D7; /* 원하는 테두리 색상 */
-    border-radius: 4px;        /* 약간의 곡률 */
-    background-color: #fff;
-    cursor: pointer;
-    outline: none;
+  flex-shrink: 0;
+  border: 1px solid #d7d7d7; /* 원하는 테두리 색상 */
+  border-radius: 4px; /* 약간의 곡률 */
+  background-color: #fff;
+  cursor: pointer;
+  outline: none;
 }
 
 /*
@@ -75,27 +68,25 @@
     border: 1px solid #D7D7D7;
 } */
 
-.join{
-    display:flex;
-    font-size:16px;
-    position: absolute;  /* 부모인 pageContainer 기준 고정 */
-  bottom: 30px;        /* 바닥에서 30px 띄움 */
-  left: 50%;           /* 가로 중앙으로 보냄 */
+.join {
+  display: flex;
+  font-size: 16px;
+  position: absolute; /* 부모인 pageContainer 기준 고정 */
+  bottom: 30px; /* 바닥에서 30px 띄움 */
+  left: 50%; /* 가로 중앙으로 보냄 */
   transform: translateX(-50%); /* 정확한 중앙 정렬을 위해 왼쪽으로 50% 이동 */
-  
+
   font-size: 16px;
   color: #666;
-
 }
 
-.join span{
-
-     text-decoration: underline;
-     font-size:16px;
-    cursor: pointer;
+.join span {
+  text-decoration: underline;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-.autoLoginWrapper input[type="checkbox"]:checked {
-    background-color: #D7D7D7;    /* 체크 시 배경색 (검정색 예시) */
-    border-color: #000;
+.autoLoginWrapper input[type='checkbox']:checked {
+  background-color: #d7d7d7; /* 체크 시 배경색 (검정색 예시) */
+  border-color: #000;
 }

@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-import { FiHeart, FiShoppingCart } from 'react-icons/fi';
 import React, { useEffect, useState } from 'react';
 import {
   FiChevronLeft,
@@ -12,16 +10,10 @@ import styles from './ProductSummary.module.css';
 
 function ProductSummary({
   product,
-  sizeOptions = ['S', 'M', 'L', 'XL'],
   isSubmitting = false,
   onAddToCart,
   onBuyNow,
 }) {
-  const [isWishlist, setIsWishlist] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState(
-    sizeOptions[1] ?? sizeOptions[0],
-  );
   const sizeOptions = product.sizes?.length ? product.sizes : ['S', 'M', 'L'];
   const galleryImages =
     product.galleryImages?.length > 0
@@ -55,10 +47,6 @@ function ProductSummary({
     <article className={styles.detailLayout}>
       <div className={styles.imageSection}>
         <img
-          src={product.imageUrl}
-          alt={product.name}
-          className={styles.productImage}
-        />
           src={galleryImages[currentImageIndex]}
           alt={product.name}
           className={styles.productImage}
@@ -137,19 +125,6 @@ function ProductSummary({
         <p className={styles.description}>{product.description}</p>
 
         <div className={styles.optionSection}>
-          <p className={styles.optionLabel}>사이즈</p>
-          <div className={styles.sizeList}>
-            {sizeOptions.map((size) => (
-              <button
-                key={size}
-                type="button"
-                className={`${styles.sizeButton} ${selectedSize === size ? styles.sizeButtonSelected : ''}`}
-                onClick={() => setSelectedSize(size)}
-              >
-                {size}
-              </button>
-            ))}
-          </div>
           <p className={styles.optionLabel}>컬러</p>
           <div className={styles.colorTag}>
             <span

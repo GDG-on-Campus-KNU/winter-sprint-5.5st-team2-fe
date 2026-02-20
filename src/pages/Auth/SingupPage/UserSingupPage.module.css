@@ -1,11 +1,11 @@
-.submit{
-     width: 384px;          
-    height: 50px;
-    background-color: #111; 
-    color: #fff;            
-    border: none;
-    border-radius: 4px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
+.submit {
+  width: 384px;
+  height: 50px;
+  background-color: #111;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
 }

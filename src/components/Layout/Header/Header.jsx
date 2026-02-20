@@ -11,7 +11,7 @@ import Iconstyle from '../IconButton.module.css';
 import style from './Header.module.css';
 
 function Header() {
-  const { isLoggedIn, logout, user } = useAuthStore();
+  const { isLoggedIn, logout } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLogout = () => {

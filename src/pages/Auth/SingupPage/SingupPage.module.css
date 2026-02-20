@@ -1,54 +1,53 @@
 .joinContainer {
-    display: flex;           
-    flex-direction: column;  
-    align-items: center;
-    width: 100%;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
-.selectionWrapper {        
-    width: 384px;
-    display: flex;
-    flex-direction: column;  
-    gap: 3px;
-    margin-bottom: 24px;
+.selectionWrapper {
+  width: 384px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 24px;
 }
 
 .selectionrole {
-    display: flex;         
-    gap: 10px;               /*  버튼 사이 간격 */
+  display: flex;
+  gap: 10px; /*  버튼 사이 간격 */
 }
 
 .selectionrole label {
-    flex: 1;                 
-    height: 44x;
-    line-height:44px;
-    text-align: center;
-    border: 1px solid #D7D7D7; 
-    border-radius: 4px;
-    cursor: pointer;
-    color:#575757;
-    background-color: #fff;
-    transition: all 0.2s;
+  flex: 1;
+  height: 44x;
+  line-height: 44px;
+  text-align: center;
+  border: 1px solid #d7d7d7;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #575757;
+  background-color: #fff;
+  transition: all 0.2s;
 }
 
-.selectionrole input[type="radio"] {
-    display: none;
+.selectionrole input[type='radio'] {
+  display: none;
 }
 
-.selectionrole input[type="radio"]:checked + label {
-    background-color: #f9f9f9;
-    border: 2px solid black; 
+.selectionrole input[type='radio']:checked + label {
+  background-color: #f9f9f9;
+  border: 2px solid black;
 }
 
 .nextButton {
-    width: 384px;          
-    height: 50px;
-    background-color: #111; 
-    color: #fff;            
-    border: none;
-    border-radius: 4px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
+  width: 384px;
+  height: 50px;
+  background-color: #111;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
 }

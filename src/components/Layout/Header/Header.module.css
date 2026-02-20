@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  zindex: 1000;
+  z-index: 1000;
   background-color: #ffff;
-  borderbottom: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
