@@ -1,0 +1,48 @@
+.summaryCard {
+  position: sticky;
+  top: 112px;
+  padding: 18px;
+  border: 1px solid #e4e4e7;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.summaryTitle {
+  margin: 0 0 14px;
+  color: #18181b;
+  font-size: 18px;
+}
+
+.selectionLabel {
+  margin: 0 0 12px;
+  color: #52525b;
+  font-size: 13px;
+}
+
+.summaryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #3f3f46;
+  font-size: 14px;
+}
+
+.totalRow {
+  margin-top: 14px;
+  margin-bottom: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #e4e4e7;
+  color: #18181b;
+  font-size: 16px;
+}
+
+.continueButton {
+  margin-top: 8px;
+}
+
+@media (max-width: 960px) {
+  .summaryCard {
+    position: static;
+  }
+}
