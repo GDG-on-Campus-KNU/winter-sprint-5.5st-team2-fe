@@ -72,7 +72,10 @@ function CartPage() {
     () => cartItems.filter((item) => selectedItemIds.includes(item.id)),
     [cartItems, selectedItemIds],
   );
-  const allItemIds = useMemo(() => cartItems.map((item) => item.id), [cartItems]);
+  const allItemIds = useMemo(
+    () => cartItems.map((item) => item.id),
+    [cartItems],
+  );
   const isAllSelected =
     allItemIds.length > 0 &&
     allItemIds.every((itemId) => selectedItemIds.includes(itemId));
@@ -132,9 +135,7 @@ function CartPage() {
       .map((item) => item.id);
 
     if (isChecked) {
-      setSelectedItemIds((prev) => [
-        ...new Set([...prev, ...brandItemIds]),
-      ]);
+      setSelectedItemIds((prev) => [...new Set([...prev, ...brandItemIds])]);
       return;
     }
 
@@ -172,8 +173,12 @@ function CartPage() {
       <section className={styles.page}>
         <div className={styles.emptyState}>
           <h1 className={styles.title}>장바구니</h1>
-          <p className={styles.emptyMessage}>장바구니에 담긴 상품이 없습니다.</p>
-          <CommonButton onClick={() => navigate('/')}>쇼핑 계속하기</CommonButton>
+          <p className={styles.emptyMessage}>
+            장바구니에 담긴 상품이 없습니다.
+          </p>
+          <CommonButton onClick={() => navigate('/')}>
+            쇼핑 계속하기
+          </CommonButton>
         </div>
       </section>
     );
