@@ -41,6 +41,7 @@
 .thumbWrap {
   width: 100%;
   overflow: hidden;
+  margin-bottom: 6px;
 }
 
 .thumbWrap img {
