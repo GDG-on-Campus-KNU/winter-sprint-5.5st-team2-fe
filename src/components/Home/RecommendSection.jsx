@@ -2,26 +2,28 @@ import React from 'react';
 import styles from './RecommendSection.module.css';
 import ProductGrid from '../common/ProductGrid';
 import Pagination from '../common/Pagination';
+import Skeleton from '../../components/common/skeleton/Skeleton';
 
 const SORT_OPTIONS = [
-  { value: 'recommend', label: '추천순' },
-  { value: 'latest', label: '최신순' },
+  { value: 'Oldest', label: '오래된순' },
+  { value: 'Newest', label: '최신순' },
 ];
 
 export default function RecommendSection({
-  title = '추천 상품',
+  title = '오늘 들어온 상품',
   products = [],
-  sort = 'recommend',
+  sort = 'Newest',
   onSortChange,
   page,
   totalPages,
   onPageChange,
   onCardClick,
+  isLoading,
 }) {
   return (
     <section className={styles.section}>
       <div className={styles.headerRow}>
-        <h2 className={styles.title}>{title}</h2>
+        <>{isLoading ? (<Skeleton width = "10%" height = "29px" borderRadius='4px'/>) : (<h2 className={styles.title}>{title}</h2>)}</>
 
         <select
           className={styles.select}
@@ -40,14 +42,15 @@ export default function RecommendSection({
         products={products}
         variant="grid"
         onCardClick={onCardClick}
+        isLoading = {isLoading}
       />
 
       <div className={styles.paginationRow}>
-        <Pagination
+        {!isLoading && <Pagination
           currentPage={page}
           totalPages={totalPages}
           onPageChange={onPageChange}
-        />
+        />}
       </div>
     </section>
   );
