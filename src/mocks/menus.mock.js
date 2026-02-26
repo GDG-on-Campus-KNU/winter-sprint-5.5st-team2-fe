@@ -104,6 +104,23 @@ const baseMockMenus = [
     available: true,
     description: '인기 상품 리오더 버전입니다.',
   },
+  {
+    id: '107',
+    brand: '피지컬 디파트먼트',
+    category: '상의',
+    name: '체크 스타테일 엘보우 패치 후드집업_그레이',
+    rating: 4.7,
+    color: 'Gray',
+    colorHex: '#8D9097',
+    sizes: ['S', 'M', 'L'],
+    originalPrice: 89000,
+    discountRate: 45,
+    imageUrl:
+      'https://image.msscdn.net/thumbnails/images/goods_img/20250122/4738347/4738347_17567941187869_big.jpg?w=1200',
+    stock: 5,
+    available: true,
+    description: '엘보우 패치 디테일이 돋보이는 그래이 컬러 후드집업입니다.',
+  },
 ];
 
 const enrichMenu = (menu) => {

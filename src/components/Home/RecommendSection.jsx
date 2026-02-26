@@ -5,14 +5,14 @@ import Pagination from '../common/Pagination';
 import Skeleton from '../../components/common/skeleton/Skeleton';
 
 const SORT_OPTIONS = [
-  { value: 'recommend', label: '추천순' },
-  { value: 'latest', label: '최신순' },
+  { value: 'Oldest', label: '오래된순' },
+  { value: 'Newest', label: '최신순' },
 ];
 
 export default function RecommendSection({
-  title = '추천 상품',
+  title = '오늘 들어온 상품',
   products = [],
-  sort = 'recommend',
+  sort = 'Newest',
   onSortChange,
   page,
   totalPages,

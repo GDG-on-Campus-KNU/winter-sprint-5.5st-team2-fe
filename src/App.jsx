@@ -10,8 +10,9 @@ import LoginPage from './pages/Auth/LoginPage/LoginPage';
 import SingupPage from './pages/Auth/SingupPage/SingupPage';
 import UserSingupPage from './pages/Auth/SingupPage/UserSingupPage';
 import AdminSingupPage from './pages/Auth/SingupPage/AdminSingupPage';
+import MyPage from './pages/MyPage/UserMyPage';
 
-function App() {
+export default function App() {
   return (
     <ToastProvider>
       <BrowserRouter>
@@ -23,14 +24,13 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/sing" element={<SingupPage />} />
+            <Route path="/singup" element={<SingupPage />} />
             <Route path="/singup/personal" element={<UserSingupPage />} />
             <Route path="/singup/admin" element={<AdminSingupPage />} />
+            <Route path="/mypage" element={<MyPage />} />
           </Routes>
         </Layout>
       </BrowserRouter>
     </ToastProvider>
   );
 }
-
-export default App;
