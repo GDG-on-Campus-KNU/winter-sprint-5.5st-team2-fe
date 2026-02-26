@@ -17,22 +17,22 @@ const ProductDetail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-    //api 연동 전 임시 로직 
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 1500); 
-      return () => clearTimeout(timer);
-    }); 
-
+  //api 연동 전 임시 로직 추가
   useEffect(() => {
+    // 1. Mock 데이터 사용 시 로직
     if (shouldUseMock) {
+      setIsLoading(true); // 로딩 시작
+
       const defaultMockProduct = Object.values(mockMenus)[0];
       const mockProduct = mockMenus[id] ?? defaultMockProduct;
-      setProduct(mockProduct);
-      setError('');
-      setIsLoading(false);
-      return;
+
+      const timer = setTimeout(() => {
+        setProduct(mockProduct);
+        setError('');
+        setIsLoading(false);
+      }, 1500);
+
+      return () => clearTimeout(timer); 
     }
 
     const controller = new AbortController();
@@ -80,7 +80,13 @@ const ProductDetail = () => {
   }, [id]);
 
   if (isLoading) {
-    return <section className="page">불러오는 중...</section>;
+    return (
+      <section className="page">
+        <div className="contentWrap">
+          <ProductSummary isLoading={true} isSubmitting={false} />
+        </div>
+      </section>
+    );
   }
 
   if (error || !product) {
@@ -144,7 +150,7 @@ const ProductDetail = () => {
           onAddToCart={handleAddToCart}
           onBuyNow={handleBuyNow}
         />
-        {!isLoading && (<ProductDetailImages images={detailImages} name={product.name} />)}
+       <ProductDetailImages images={detailImages} name={product.name} />
       </div>
     </section>
   );

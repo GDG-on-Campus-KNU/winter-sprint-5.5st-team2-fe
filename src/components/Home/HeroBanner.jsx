@@ -50,35 +50,37 @@ export default function HeroBanner({
     },
   ];
 
-
   return (
     <div className={styles.heroWrap}>
-      <section className={styles.promoSection} onClick={!isLoading ? onClick : undefined}>
+      <section
+        className={styles.promoSection}
+        onClick={!isLoading ? onClick : undefined}
+      >
         {isLoading ? (
           <Skeleton width="100%" height="100%" borderRAdius="12px" />
         ) : (
-        <>
-        <img className={styles.image} src={imageSrc} alt={title} />
-        <div className={styles.overlay}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.subtitle}>{subtitle}</p>
-        </div>
-        </>
+          <>
+            <img className={styles.image} src={imageSrc} alt={title} />
+            <div className={styles.overlay}>
+              <h2 className={styles.title}>{title}</h2>
+              <p className={styles.subtitle}>{subtitle}</p>
+            </div>
+          </>
         )}
-
       </section>
 
       <div className={styles.rightArea}>
         {isLoading ? (
-          <Skeleton width = "60%" height = "38px" borderRadius = "4px"/> 
+          <Skeleton width="60%" height="38px" borderRadius="4px" />
         ) : (
-                  <h2 className={styles.sectionTitle}>{sectionTitle}</h2>
-
+          <h2 className={styles.sectionTitle}>{sectionTitle}</h2>
         )}
-        <ProductGrid products={mockProducts} variant="featured" isLoading = {isLoading} />
+        <ProductGrid
+          products={mockProducts}
+          variant="featured"
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );
-
-
 }
