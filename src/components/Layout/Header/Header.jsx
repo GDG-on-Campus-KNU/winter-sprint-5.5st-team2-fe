@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../../store/useAuthStore';
+import useCartStore from '../../../store/useCartStore';
 import NavButton from '../NavButton';
 import IconButton from '../IconButton';
 import UserIcon from '../../../assets/User.png';
@@ -12,7 +13,9 @@ import style from './Header.module.css';
 
 function Header() {
   const { isLoggedIn, logout } = useAuthStore();
+  const cartItems = useCartStore((state) => state.cartItems);
   const navigate = useNavigate();
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleLogout = () => {
     logout(); //스토어 상태 초기화하기 + LocalStorage데이터 삭제하기
@@ -31,7 +34,7 @@ function Header() {
   const iconButton = [
     { label: '마이페이지', path: '/mypage', key: '/my', icon: UserIcon },
     {
-      label: '장바구니',
+      label: cartCount > 0 ? `장바구니(${cartCount})` : '장바구니',
       path: '/cart',
       key: '/cart',
       icon: ShoppingBagIcon,

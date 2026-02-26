@@ -14,6 +14,32 @@
   animation: fadeInOut 3s forwards;
 }
 
+.toast-message {
+  margin: 0;
+}
+
+.toast-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.toast-action-button {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.toast-action-button.primary {
+  background: #fff;
+  color: #333;
+  border-color: #fff;
+}
+
 .toast-container.success {
   border-left: 4px solid #4caf50;
 }

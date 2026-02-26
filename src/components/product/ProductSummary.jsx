@@ -178,7 +178,13 @@ function ProductSummary({
             fullWidth
             disabled={isActionDisabled}
             icon={<FiShoppingCart size={18} />}
-            onClick={() => onAddToCart?.({ menuId: product.id, quantity })}
+            onClick={() =>
+              onAddToCart?.({
+                menuId: product.id,
+                quantity,
+                selectedSize,
+              })
+            }
           >
             장바구니 담기
           </CommonButton>

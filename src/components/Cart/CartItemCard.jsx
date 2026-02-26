@@ -39,16 +39,16 @@ function CartItemCard({
 
       <div className={styles.itemList}>
         {items.map((item) => {
-          const isOptionEditorOpen = expandedItemIds.includes(item.id);
+          const isOptionEditorOpen = expandedItemIds.includes(item.cartItemId);
 
           return (
-            <div className={styles.itemRow} key={item.id}>
+            <div className={styles.itemRow} key={item.cartItemId}>
               <div className={styles.itemCheck}>
                 <CommonCheckbox
-                  id={`item-checkbox-${item.id}`}
-                  checked={selectedItemIds.includes(item.id)}
+                  id={`item-checkbox-${item.cartItemId}`}
+                  checked={selectedItemIds.includes(item.cartItemId)}
                   onChange={(isChecked) =>
-                    onItemCheckedChange(item.id, isChecked)
+                    onItemCheckedChange(item.cartItemId, isChecked)
                   }
                 />
               </div>
@@ -69,7 +69,7 @@ function CartItemCard({
                   <button
                     type="button"
                     className={styles.changeButton}
-                    onClick={() => toggleOptionEditor(item.id)}
+                    onClick={() => toggleOptionEditor(item.cartItemId)}
                   >
                     변경
                   </button>
@@ -81,7 +81,7 @@ function CartItemCard({
                       className={styles.sizeSelect}
                       value={item.selectedSize}
                       onChange={(event) =>
-                        onSizeChange(item.id, event.target.value)
+                        onSizeChange(item.cartItemId, event.target.value)
                       }
                       aria-label="옵션 사이즈"
                     >
@@ -96,7 +96,7 @@ function CartItemCard({
                       <button
                         type="button"
                         className={styles.quantityButton}
-                        onClick={() => onQuantityChange(item.id, -1)}
+                        onClick={() => onQuantityChange(item.cartItemId, -1)}
                         aria-label="수량 감소"
                       >
                         -
@@ -107,7 +107,7 @@ function CartItemCard({
                       <button
                         type="button"
                         className={styles.quantityButton}
-                        onClick={() => onQuantityChange(item.id, 1)}
+                        onClick={() => onQuantityChange(item.cartItemId, 1)}
                         aria-label="수량 증가"
                       >
                         +
@@ -127,7 +127,7 @@ function CartItemCard({
                 <button
                   type="button"
                   className={styles.removeButton}
-                  onClick={() => onRemove(item.id)}
+                  onClick={() => onRemove(item.cartItemId)}
                 >
                   삭제
                 </button>
