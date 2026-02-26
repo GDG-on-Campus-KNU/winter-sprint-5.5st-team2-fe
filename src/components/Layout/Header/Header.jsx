@@ -32,8 +32,8 @@ function Header() {
     { label: '마이페이지', path: '/mypage', key: '/my', icon: UserIcon },
     {
       label: '장바구니',
-      path: '/shoppingBag',
-      key: '/shoppingBag',
+      path: '/cart',
+      key: '/cart',
       icon: ShoppingBagIcon,
     },
   ];
