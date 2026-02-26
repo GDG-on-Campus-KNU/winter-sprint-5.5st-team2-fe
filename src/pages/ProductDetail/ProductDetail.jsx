@@ -32,7 +32,7 @@ const ProductDetail = () => {
         setIsLoading(false);
       }, 1500);
 
-      return () => clearTimeout(timer); 
+      return () => clearTimeout(timer);
     }
 
     const controller = new AbortController();
@@ -150,7 +150,7 @@ const ProductDetail = () => {
           onAddToCart={handleAddToCart}
           onBuyNow={handleBuyNow}
         />
-       <ProductDetailImages images={detailImages} name={product.name} />
+        <ProductDetailImages images={detailImages} name={product.name} />
       </div>
     </section>
   );

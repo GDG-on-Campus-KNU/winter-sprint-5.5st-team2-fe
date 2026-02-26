@@ -7,7 +7,7 @@ import {
 } from 'react-icons/fi';
 import CommonButton from '../common/CommonButton';
 import styles from './ProductSummary.module.css';
-import Skeleton from '../../components/common/skeleton/Skeleton'
+import Skeleton from '../../components/common/skeleton/Skeleton';
 
 function ProductSummary({
   product,
@@ -16,7 +16,6 @@ function ProductSummary({
   onBuyNow,
   isLoading,
 }) {
-
   if (isLoading) {
     return (
       <article className={styles.detailLayout}>
@@ -25,12 +24,12 @@ function ProductSummary({
         </div>
 
         <div className={styles.content}>
-          <Skeleton width="30%" height="14px" /> 
-          <Skeleton width="20%" height="14px" /> 
-          <Skeleton width="100%" height="32px" className={styles.name} /> 
-          <Skeleton width="50%" height="24px" /> 
+          <Skeleton width="30%" height="14px" />
+          <Skeleton width="20%" height="14px" />
+          <Skeleton width="100%" height="32px" className={styles.name} />
+          <Skeleton width="50%" height="24px" />
           <div style={{ marginTop: '20px' }}>
-            <Skeleton width="100%" height="100px" /> 
+            <Skeleton width="100%" height="100px" />
           </div>
           <div className={styles.actionButtons} style={{ marginTop: 'auto' }}>
             <Skeleton width="100%" height="48px" borderRadius="8px" />
@@ -68,8 +67,6 @@ function ProductSummary({
 
   const isSoldOut = product.available === false || Number(product.stock) === 0;
   const isActionDisabled = isSoldOut || isSubmitting;
-
-  
 
   return (
     <article className={styles.detailLayout}>
