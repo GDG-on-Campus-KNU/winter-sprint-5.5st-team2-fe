@@ -6,12 +6,16 @@ import { getMenuDetail } from '../../api/menus';
 import { createOrder } from '../../api/orders';
 import ProductDetailImages from '../../components/product/ProductDetailImages';
 import ProductSummary from '../../components/product/ProductSummary';
+import useCartStore from '../../store/useCartStore';
+import { useToast } from '../../context/ToastContext';
 import { fallbackImage, mockMenus } from '../../mocks/menus.mock';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const showToast = useToast();
+  const addCartItem = useCartStore((state) => state.addItem);
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -92,7 +96,7 @@ const ProductDetail = () => {
       ? product.detailImages
       : [product.imageUrl];
 
-  const handleAddToCart = async ({ menuId, quantity }) => {
+  const handleAddToCart = async ({ menuId, quantity, selectedSize }) => {
     const payload = {
       menuId: Number(menuId),
       quantity,
@@ -100,12 +104,22 @@ const ProductDetail = () => {
 
     try {
       setIsSubmitting(true);
+      let createdCartItem = null;
       if (!shouldUseMock) {
-        await addToCart(payload);
+        createdCartItem = await addToCart(payload);
       }
-      navigate('/cart', { state: { payload } });
+      addCartItem(product, quantity, selectedSize, createdCartItem?.cartItemId);
+      showToast('장바구니에 담겼습니다.', 'success', {
+        actions: [
+          {
+            label: '장바구니 이동',
+            variant: 'primary',
+            onClick: () => navigate('/cart'),
+          },
+        ],
+      });
     } catch {
-      alert('장바구니 담기에 실패했습니다.');
+      showToast('장바구니 담기에 실패했습니다.', 'error');
     } finally {
       setIsSubmitting(false);
     }

@@ -1,59 +1,40 @@
-import React, { useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CartItemCard from '../../components/Cart/CartItemCard';
 import CartSummaryCard from '../../components/Cart/CartSummaryCard';
 import CommonButton from '../../components/common/CommonButton';
 import CommonCheckbox from '../../components/common/CommonCheckbox';
-import { mockMenuList, mockMenus } from '../../mocks/menus.mock';
+import useCartStore from '../../store/useCartStore';
 import styles from './CartPage.module.css';
 
 const DEFAULT_SHIPPING_FEE = 3000;
 
-function toCartItem(menu, quantity = 1) {
-  const options = menu.sizes?.length ? menu.sizes : ['FREE'];
-  return {
-    id: String(menu.id),
-    brand: menu.brand,
-    name: menu.name,
-    imageUrl: menu.imageUrl,
-    price: Number(menu.price ?? menu.originalPrice ?? 0),
-    originalPrice: Number(menu.originalPrice ?? menu.price ?? 0),
-    sizeOptions: options,
-    selectedSize: options[0],
-    quantity: Math.max(1, Number(quantity) || 1),
-  };
-}
-
-function getInitialItems(payload) {
-  if (Array.isArray(payload?.items) && payload.items.length > 0) {
-    return payload.items
-      .map((item) => {
-        const menu = mockMenus[String(item.menuId)];
-        return menu ? toCartItem(menu, item.quantity) : null;
-      })
-      .filter(Boolean);
-  }
-
-  if (payload?.menuId) {
-    const menu = mockMenus[String(payload.menuId)];
-    if (menu) {
-      return [toCartItem(menu, payload.quantity)];
-    }
-  }
-
-  return [toCartItem(mockMenuList[0], 1)];
-}
-
 function CartPage() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState(() =>
-    getInitialItems(location.state?.payload),
-  );
-  const [selectedItemIds, setSelectedItemIds] = useState(() => {
-    const items = getInitialItems(location.state?.payload);
-    return items.map((item) => item.id);
-  });
+  const cartItems = useCartStore((state) => state.cartItems);
+  const removeItem = useCartStore((state) => state.removeItem);
+  const updateItemQuantity = useCartStore((state) => state.updateItemQuantity);
+  const updateItemSize = useCartStore((state) => state.updateItemSize);
+  const [selectedItemIds, setSelectedItemIds] = useState([]);
+  const hasInitializedSelection = useRef(false);
+
+  useEffect(() => {
+    const allIds = cartItems.map((item) => item.cartItemId);
+
+    if (!hasInitializedSelection.current) {
+      setSelectedItemIds(allIds);
+      hasInitializedSelection.current = true;
+      return;
+    }
+
+    setSelectedItemIds((prev) => {
+      if (allIds.length === 0) {
+        return [];
+      }
+
+      return prev.filter((id) => allIds.includes(id));
+    });
+  }, [cartItems]);
 
   const brandGroups = useMemo(() => {
     const map = cartItems.reduce((acc, item) => {
@@ -69,11 +50,11 @@ function CartPage() {
   }, [cartItems]);
 
   const selectedItems = useMemo(
-    () => cartItems.filter((item) => selectedItemIds.includes(item.id)),
+    () => cartItems.filter((item) => selectedItemIds.includes(item.cartItemId)),
     [cartItems, selectedItemIds],
   );
   const allItemIds = useMemo(
-    () => cartItems.map((item) => item.id),
+    () => cartItems.map((item) => item.cartItemId),
     [cartItems],
   );
   const isAllSelected =
@@ -89,50 +70,34 @@ function CartPage() {
   const shippingFee = selectedItems.length > 0 ? DEFAULT_SHIPPING_FEE : 0;
   const total = subtotal + shippingFee;
 
-  const handleRemoveItem = (targetId) => {
-    const nextItems = cartItems.filter((item) => item.id !== targetId);
-    setCartItems(nextItems);
-    setSelectedItemIds((prev) => prev.filter((id) => id !== targetId));
+  const handleRemoveItem = (targetCartItemId) => {
+    removeItem(targetCartItemId);
+    setSelectedItemIds((prev) => prev.filter((id) => id !== targetCartItemId));
   };
 
-  const handleQuantityChange = (targetId, delta) => {
-    setCartItems((prev) =>
-      prev.map((item) => {
-        if (item.id !== targetId) {
-          return item;
-        }
-
-        return {
-          ...item,
-          quantity: Math.max(1, item.quantity + delta),
-        };
-      }),
-    );
+  const handleQuantityChange = (targetCartItemId, delta) => {
+    updateItemQuantity(targetCartItemId, delta);
   };
 
-  const handleSizeChange = (targetId, selectedSize) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === targetId ? { ...item, selectedSize } : item,
-      ),
-    );
+  const handleSizeChange = (targetCartItemId, selectedSize) => {
+    updateItemSize(targetCartItemId, selectedSize);
   };
 
-  const handleItemCheckedChange = (itemId, isChecked) => {
+  const handleItemCheckedChange = (cartItemId, isChecked) => {
     if (isChecked) {
       setSelectedItemIds((prev) =>
-        prev.includes(itemId) ? prev : [...prev, itemId],
+        prev.includes(cartItemId) ? prev : [...prev, cartItemId],
       );
       return;
     }
 
-    setSelectedItemIds((prev) => prev.filter((id) => id !== itemId));
+    setSelectedItemIds((prev) => prev.filter((id) => id !== cartItemId));
   };
 
   const handleBrandCheckedChange = (brand, isChecked) => {
     const brandItemIds = cartItems
       .filter((item) => item.brand === brand)
-      .map((item) => item.id);
+      .map((item) => item.cartItemId);
 
     if (isChecked) {
       setSelectedItemIds((prev) => [...new Set([...prev, ...brandItemIds])]);
@@ -159,7 +124,7 @@ function CartPage() {
 
     const payload = {
       orderItems: selectedItems.map((item) => ({
-        menuId: Number(item.id),
+        menuId: Number(item.productId),
         quantity: item.quantity,
       })),
       couponId: null,
@@ -210,11 +175,15 @@ function CartPage() {
               items={group.items}
               selectedItemIds={selectedItemIds}
               isBrandChecked={group.items.every((item) =>
-                selectedItemIds.includes(item.id),
+                selectedItemIds.includes(item.cartItemId),
               )}
               isBrandIndeterminate={
-                group.items.some((item) => selectedItemIds.includes(item.id)) &&
-                !group.items.every((item) => selectedItemIds.includes(item.id))
+                group.items.some((item) =>
+                  selectedItemIds.includes(item.cartItemId),
+                ) &&
+                !group.items.every((item) =>
+                  selectedItemIds.includes(item.cartItemId),
+                )
               }
               onBrandCheckedChange={handleBrandCheckedChange}
               onItemCheckedChange={handleItemCheckedChange}
