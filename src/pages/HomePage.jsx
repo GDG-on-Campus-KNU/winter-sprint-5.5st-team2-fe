@@ -36,7 +36,7 @@ export default function HomePage() {
       />
 
       <RecommendSection
-        title="추천 상품"
+        title="오늘 들어온 상품"
         products={recommendProducts}
         sort={sort}
         onSortChange={(nextSort) => {
