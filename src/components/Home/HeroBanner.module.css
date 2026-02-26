@@ -1,9 +1,9 @@
 .heroWrap {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   align-items: flex-start;
 
-  padding: 91px 60px 0 60px;
+  justify-content: center;
   box-sizing: border-box;
 }
 
