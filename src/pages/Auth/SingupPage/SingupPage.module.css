@@ -36,9 +36,9 @@
 }
 
 .selectionrole input[type='radio']:checked + label {
-  background-color: #54A7DA;
-  border: 2px solid #54A7DA;
-  color : white;
+  background-color: #54a7da;
+  border: 2px solid #54a7da;
+  color: white;
 }
 
 .nextButton {

@@ -1,0 +1,19 @@
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%; 
+}
+
+.imageWrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1.2; 
+}
+
+
+.textInfoGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 8px; 
+}

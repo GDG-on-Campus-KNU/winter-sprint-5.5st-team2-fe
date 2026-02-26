@@ -17,6 +17,14 @@ const ProductDetail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
+    //api 연동 전 임시 로직 
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 1500); 
+      return () => clearTimeout(timer);
+    }); 
+
   useEffect(() => {
     if (shouldUseMock) {
       const defaultMockProduct = Object.values(mockMenus)[0];
@@ -136,7 +144,7 @@ const ProductDetail = () => {
           onAddToCart={handleAddToCart}
           onBuyNow={handleBuyNow}
         />
-        <ProductDetailImages images={detailImages} name={product.name} />
+        {!isLoading && (<ProductDetailImages images={detailImages} name={product.name} />)}
       </div>
     </section>
   );
