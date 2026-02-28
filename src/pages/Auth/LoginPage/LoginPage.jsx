@@ -83,7 +83,7 @@ function LoginPage() {
         처음이신가요?{' '}
         <span
           onClick={() => {
-            navigate('/sing');
+            navigate('/singup');
           }}
         >
           회원가입
