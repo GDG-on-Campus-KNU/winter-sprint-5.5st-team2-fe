@@ -14,12 +14,12 @@ function ProductSummary({
   onAddToCart,
   onBuyNow,
 }) {
-  const sizeOptions = product.sizes?.length ? product.sizes : ['S', 'M', 'L'];
+  const sizeOptions = product.sizes?.length ? product.sizes : [];
   const galleryImages =
     product.galleryImages?.length > 0
       ? product.galleryImages
       : [product.imageUrl];
-  const defaultSize = sizeOptions[0];
+  const defaultSize = sizeOptions[0] ?? '';
   const colorName = product.color ?? '기본';
   const colorHex = product.colorHex ?? '#111111';
 
@@ -41,7 +41,8 @@ function ProductSummary({
   );
 
   const isSoldOut = product.available === false || Number(product.stock) === 0;
-  const isActionDisabled = isSoldOut || isSubmitting;
+  const isSizeUnavailable = sizeOptions.length === 0;
+  const isActionDisabled = isSoldOut || isSizeUnavailable || isSubmitting;
 
   return (
     <article className={styles.detailLayout}>
@@ -141,13 +142,18 @@ function ProductSummary({
           <select
             className={styles.sizeSelect}
             value={selectedSize}
+            disabled={isSizeUnavailable}
             onChange={(event) => setSelectedSize(event.target.value)}
           >
-            {sizeOptions.map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
+            {isSizeUnavailable ? (
+              <option value="">사이즈 없음</option>
+            ) : (
+              sizeOptions.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))
+            )}
           </select>
         </div>
 
@@ -180,7 +186,7 @@ function ProductSummary({
             icon={<FiShoppingCart size={18} />}
             onClick={() =>
               onAddToCart?.({
-                menuId: product.id,
+                productId: product.id,
                 quantity,
                 selectedSize,
               })
@@ -191,7 +197,13 @@ function ProductSummary({
           <CommonButton
             fullWidth
             disabled={isActionDisabled}
-            onClick={() => onBuyNow?.({ menuId: product.id, quantity })}
+            onClick={() =>
+              onBuyNow?.({
+                productId: product.id,
+                quantity,
+                selectedSize,
+              })
+            }
           >
             {isSoldOut ? '품절' : isSubmitting ? '처리 중...' : '구매하기'}
           </CommonButton>

@@ -124,8 +124,9 @@ function CartPage() {
 
     const payload = {
       orderItems: selectedItems.map((item) => ({
-        menuId: Number(item.productId),
+        productId: Number(item.productId),
         quantity: item.quantity,
+        selectedSize: item.selectedSize,
       })),
       couponId: null,
     };
