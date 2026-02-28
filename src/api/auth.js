@@ -1,9 +1,4 @@
-import {
-  apiRequest,
-  clearTokens,
-  getRefreshToken,
-  setTokens,
-} from './client';
+import { apiRequest, clearTokens, getRefreshToken, setTokens } from './client';
 
 export async function signupUser(payload) {
   return apiRequest('/api/auth/signup/user', {
@@ -33,9 +28,7 @@ export async function login(payload) {
   return data;
 }
 
-export async function refreshAccessToken(
-  refreshToken = getRefreshToken(),
-) {
+export async function refreshAccessToken(refreshToken = getRefreshToken()) {
   const data = await apiRequest('/api/auth/refresh', {
     method: 'POST',
     body: { refreshToken },
