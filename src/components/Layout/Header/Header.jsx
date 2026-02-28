@@ -7,6 +7,8 @@ import IconButton from '../IconButton';
 import UserIcon from '../../../assets/User.png';
 import ShoppingBagIcon from '../../../assets/ShoppingBag.png';
 import Logout from '../../../assets/logout.png';
+import { logout as logoutApi } from '../../../api/auth';
+import { shouldUseMock } from '../../../api/client';
 import Navstyle from '../NavButton.module.css';
 import Iconstyle from '../IconButton.module.css';
 import style from './Header.module.css';
@@ -17,9 +19,15 @@ function Header() {
   const navigate = useNavigate();
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  const handleLogout = () => {
-    logout(); //스토어 상태 초기화하기 + LocalStorage데이터 삭제하기
-    navigate('/'); //메인페이지로 복귀시키기
+  const handleLogout = async () => {
+    try {
+      if (!shouldUseMock) {
+        await logoutApi();
+      }
+    } finally {
+      logout();
+      navigate('/');
+    }
   };
 
   const categories = [
