@@ -78,7 +78,15 @@ function UserSingupPage() {
         onSubmit={handleUserSignup}
         style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
       >
-        <Authcomponent label="이름" placeholder="이름" required={true} />
+        <Authcomponent
+          label="이름"
+          placeholder="이름"
+          required={true}
+          value={formData.userName}
+          onChange={(e) =>
+            setFormData({ ...formData, userName: e.target.value })
+          }
+        />
         <Authcomponent
           label="이메일"
           placeholder="이메일 입력"
