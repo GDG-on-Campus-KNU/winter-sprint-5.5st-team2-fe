@@ -5,8 +5,7 @@ const getProductId = (product) =>
   String(product?.productId ?? product?.id ?? product?.menuId ?? '');
 
 const getCartItemId = (product, fallbackCartItemId) => {
-  const value =
-    fallbackCartItemId ?? product?.cartItemId ?? product?.id ?? product?.menuId;
+  const value = fallbackCartItemId ?? product?.cartItemId;
 
   if (value === undefined || value === null || value === '') {
     return null;
