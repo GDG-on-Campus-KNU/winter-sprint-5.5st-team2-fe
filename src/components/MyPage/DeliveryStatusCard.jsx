@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './DeliveryStatusCard.module.css';
 
-const STEPS = ['상품 준비중', '택배사 전달', '배송중', '배송 완료'];
+const STEPS = ['결제 완료', '상품 준비중', '배송중', '배송 완료'];
 
 export default function DeliveryStatusCard({ delivery }) {
   const date = delivery?.date ?? '';

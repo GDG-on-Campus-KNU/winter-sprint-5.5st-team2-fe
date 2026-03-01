@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MOCK_DELIVERY } from '../../mocks/myPage.mock';
+import { MOCK_COUPON_RESPONSE } from '../../mocks/coupons.mock';
 
 import styles from './UserMyPage.module.css';
 import ProfileCard from '../../components/MyPage/ProfileCard';
 import DeliveryStatusCard from '../../components/MyPage/DeliveryStatusCard';
 import MyShoppingLinks from '../../components/MyPage/MyShoppingLinks';
+import CouponModal from '../../components/common/CouponModal';
 
 import useRequireAuth from '../../hooks/useRequireAuth';
 import useAuthStore from '../../store/useAuthStore';
@@ -17,6 +19,8 @@ export default function UserMyPage() {
     types: 'error',
   });
 
+  const [isCouponOpen, setIsCouponOpen] = useState(false);
+
   if (!isAllowed) return null;
 
   return (
@@ -24,11 +28,15 @@ export default function UserMyPage() {
       <h1 className={styles.title}>마이페이지</h1>
       <div className={styles.container}>
         <section className={styles.section}>
-          <ProfileCard user={user} />
+          <ProfileCard
+            user={user}
+            onCouponClick={() => setIsCouponOpen(true)}
+          />
         </section>
 
         <section className={styles.section}>
-          <h2 className={styles.secutionTitle}>배송 현황</h2>
+          {/* 오타 주의: secutionTitle -> sectionTitle */}
+          <h2 className={styles.sectionTitle}>배송 현황</h2>
           <DeliveryStatusCard delivery={MOCK_DELIVERY} />
         </section>
 
@@ -37,6 +45,12 @@ export default function UserMyPage() {
           <MyShoppingLinks />
         </section>
       </div>
+
+      <CouponModal
+        open={isCouponOpen}
+        onClose={() => setIsCouponOpen(false)}
+        coupons={MOCK_COUPON_RESPONSE.data}
+      />
     </div>
   );
 }
