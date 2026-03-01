@@ -5,6 +5,7 @@ import useAuthStore from '../../../store/useAuthStore';
 import AuthLayout from '../../../components/Auth/Authlayout';
 import style from './LoginPage.module.css';
 import { useToast } from '../../../context/ToastContext';
+import { MOCK_ADMIN_DATA } from '../../../mocks/admin';
 import { getMyProfile, login as loginApi } from '../../../api/auth';
 import { shouldUseMock } from '../../../api/client';
 
@@ -15,6 +16,7 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const showToast = useToast();
+  const { adminLogin } = useAuthStore();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -49,8 +51,17 @@ function LoginPage() {
         );
       }
 
+      showToast(`${account.userName || '사용자'}님, 환영합니다!`, 'success');
+
       setTimeout(() => {
-        navigate('/');
+        if (foundAdmin) {
+          adminLogin(MOCK_ADMIN_DATA);
+          console.log(MOCK_ADMIN_DATA);
+          navigate('/mypage/admin');
+          showToast('관리자님, 환영합니다!', 'success');
+        } else {
+          navigate('/');
+        }
       }, 100);
     } catch {
       showToast('이메일 또는 비밀번호를 확인해주세요', 'error');

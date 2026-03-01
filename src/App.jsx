@@ -10,6 +10,10 @@ import LoginPage from './pages/Auth/LoginPage/LoginPage';
 import SingupPage from './pages/Auth/SingupPage/SingupPage';
 import UserSingupPage from './pages/Auth/SingupPage/UserSingupPage';
 import AdminSingupPage from './pages/Auth/SingupPage/AdminSingupPage';
+import AdminMyPage from './pages/MyPage/AdminMyPage';
+import ProductManage from './pages/MyPage/ProductManage';
+import ProductForm from './pages/MyPage/ProductForm';
+import ProductEdit from './pages/MyPage/ProductEdit';
 import MyPage from './pages/MyPage/UserMyPage';
 
 export default function App() {
@@ -27,6 +31,19 @@ export default function App() {
             <Route path="/singup" element={<SingupPage />} />
             <Route path="/singup/personal" element={<UserSingupPage />} />
             <Route path="/singup/admin" element={<AdminSingupPage />} />
+            <Route path="/mypage/admin" element={<AdminMyPage />} />
+            <Route
+              path="/mypage/admin/product_manage"
+              element={<ProductManage />}
+            />
+            <Route
+              path="/mypage/admin/product_form"
+              element={<ProductForm />}
+            />
+            <Route
+              path="/mypage/admin/product_edit/:productId"
+              element={<ProductEdit />}
+            />
             <Route path="/mypage" element={<MyPage />} />
           </Routes>
         </Layout>

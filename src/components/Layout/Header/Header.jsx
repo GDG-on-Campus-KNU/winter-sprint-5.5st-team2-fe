@@ -12,9 +12,12 @@ import { shouldUseMock } from '../../../api/client';
 import Navstyle from '../NavButton.module.css';
 import Iconstyle from '../IconButton.module.css';
 import style from './Header.module.css';
+import { useToast } from '../../../context/ToastContext';
 
 function Header() {
-  const { isLoggedIn, logout } = useAuthStore();
+  const { isLoggedIn, logout, admin } = useAuthStore();
+  const navigate = useNavigate();
+  const showToast = useToast();
   const cartItems = useCartStore((state) => state.cartItems);
   const clearCart = useCartStore((state) => state.clearCart);
   const navigate = useNavigate();
@@ -32,6 +35,14 @@ function Header() {
     }
   };
 
+  const handleAdminAccess = (e, path) => {
+    if (admin && path === '/') {
+      e.preventDefault();
+      showToast('관리자는 메인페이지로 이동할 수 없습니다.', 'error');
+      return;
+    }
+  };
+
   const categories = [
     { label: '아우터', path: '/', key: '/key' },
     { label: '상의', path: '/', key: '/top' },
@@ -41,8 +52,10 @@ function Header() {
     { label: '악세사리', path: '/', key: '/accessories' },
   ];
 
+  const myPagePath = admin ? '/mypage/admin' : '/mypage';
+
   const iconButton = [
-    { label: '마이페이지', path: '/mypage', key: '/my', icon: UserIcon },
+    { label: '마이페이지', path: myPagePath, key: '/my', icon: UserIcon },
     {
       label: cartCount > 0 ? `장바구니(${cartCount})` : '장바구니',
       path: '/cart',
@@ -51,6 +64,7 @@ function Header() {
     },
   ];
 
+  console.log(admin);
   return (
     <header className={style.header}>
       <NavButton
@@ -58,6 +72,7 @@ function Header() {
         label="서비스 이름"
         path="/"
         className={Navstyle.NavButton}
+        onClick={(e) => handleAdminAccess(e, '/')}
       />
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
@@ -68,6 +83,7 @@ function Header() {
                 label={item.label}
                 path={item.path}
                 className={Navstyle.NavButton}
+                onClick={(e) => handleAdminAccess(e, item.path)}
               />
             ))}
           </nav>
@@ -81,6 +97,15 @@ function Header() {
                 path={item.path}
                 Icon={item.icon}
                 className={Iconstyle.IconButton}
+                onClick={(e) => {
+                  if (admin && item.path === '/cart') {
+                    e.preventDefault();
+                    showToast(
+                      '관리자는 장바구니를 이용할 수 없습니다.',
+                      'error',
+                    );
+                  }
+                }}
               />
             ))}
           </nav>
