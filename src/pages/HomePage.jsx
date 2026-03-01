@@ -12,13 +12,13 @@ export default function HomePage() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
-  //api 연동 전 임시 로직 
+  //api 연동 전 임시 로직
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1500); 
+    }, 1500);
     return () => clearTimeout(timer);
-  }, [page, sort]); 
+  }, [page, sort]);
 
   const recommendProducts = useMemo(
     () =>
@@ -42,13 +42,13 @@ export default function HomePage() {
         title="New Collection"
         sectionTitle="새로운 S/S 시즌을 경험하다"
         onClick={() => navigate('/event/ss')}
-        isLoading = {isLoading}
+        isLoading={isLoading}
       />
 
       <RecommendSection
         title="오늘 들어온 상품"
         products={recommendProducts}
-        isLoading = {isLoading}
+        isLoading={isLoading}
         sort={sort}
         onSortChange={(nextSort) => {
           setSort(nextSort);

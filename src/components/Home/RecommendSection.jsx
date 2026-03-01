@@ -23,7 +23,13 @@ export default function RecommendSection({
   return (
     <section className={styles.section}>
       <div className={styles.headerRow}>
-        <>{isLoading ? (<Skeleton width = "10%" height = "29px" borderRadius='4px'/>) : (<h2 className={styles.title}>{title}</h2>)}</>
+        <>
+          {isLoading ? (
+            <Skeleton width="10%" height="29px" borderRadius="4px" />
+          ) : (
+            <h2 className={styles.title}>{title}</h2>
+          )}
+        </>
 
         <select
           className={styles.select}
@@ -42,15 +48,17 @@ export default function RecommendSection({
         products={products}
         variant="grid"
         onCardClick={onCardClick}
-        isLoading = {isLoading}
+        isLoading={isLoading}
       />
 
       <div className={styles.paginationRow}>
-        {!isLoading && <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-        />}
+        {!isLoading && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={onPageChange}
+          />
+        )}
       </div>
     </section>
   );
