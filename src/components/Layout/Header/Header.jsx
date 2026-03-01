@@ -16,6 +16,7 @@ import style from './Header.module.css';
 function Header() {
   const { isLoggedIn, logout } = useAuthStore();
   const cartItems = useCartStore((state) => state.cartItems);
+  const clearCart = useCartStore((state) => state.clearCart);
   const navigate = useNavigate();
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -25,6 +26,7 @@ function Header() {
         await logoutApi();
       }
     } finally {
+      clearCart();
       logout();
       navigate('/');
     }
