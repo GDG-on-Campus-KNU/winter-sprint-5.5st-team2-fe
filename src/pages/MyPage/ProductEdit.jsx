@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './ProductForm.module.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MOCK_ADMIN_PRODUCTS } from '../../mocks/products';
 import { useToast } from '../../context/ToastContext';
 
 export default function ProductEdit() {
@@ -21,9 +20,9 @@ export default function ProductEdit() {
   });
 
   useEffect(() => {
-    const targetProduct = MOCK_ADMIN_PRODUCTS.find(
-      (p) => p.id === Number(productId),
-    );
+    const savedProducts =
+      JSON.parse(localStorage.getItem('admin_products')) || [];
+    const targetProduct = savedProducts.find((p) => p.id === Number(productId));
 
     if (targetProduct) {
       setFormData({
@@ -32,9 +31,9 @@ export default function ProductEdit() {
       });
     } else {
       showToast('해당 상품을 찾을 수 없습니다.', 'error');
-      navigate('/admin/product');
+      navigate('/mypage/admin/product_manage');
     }
-  }, [productId]);
+  }, [productId, navigate, showToast]);
 
   useEffect(() => {
     const price = Number(formData.originalPrice);
@@ -64,16 +63,17 @@ export default function ProductEdit() {
       reader.readAsDataURL(file);
     }
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const index = MOCK_ADMIN_PRODUCTS.findIndex(
-      (p) => p.id === Number(productId),
+    const savedProducts =
+      JSON.parse(localStorage.getItem('admin_products')) || [];
+
+    const updatedProducts = savedProducts.map((p) =>
+      p.id === Number(productId) ? { ...formData, id: Number(productId) } : p,
     );
-    if (index !== -1) {
-      MOCK_ADMIN_PRODUCTS[index] = { ...formData, id: Number(productId) };
-    }
+
+    localStorage.setItem('admin_products', JSON.stringify(updatedProducts));
 
     showToast('상품 정보가 성공적으로 수정되었습니다.', 'success');
     navigate('/mypage/admin/product_manage');

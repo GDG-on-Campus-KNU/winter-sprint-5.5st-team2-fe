@@ -30,7 +30,6 @@ function LoginPage() {
       (u) => u.email === email && u.password === password,
     );
 
-    // 1. 어떤 계정인지 확인
     const account = foundUser || foundAdmin;
 
     if (account) {

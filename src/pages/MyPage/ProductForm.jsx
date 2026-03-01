@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styles from './ProductForm.module.css';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useToast } from '../../context/ToastContext';
 
 export default function ProductForm() {
   const { productId } = useParams();
   const navigate = useNavigate();
+  const showToast = useToast();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -48,9 +50,36 @@ export default function ProductForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('전송할 데이터:', formData);
-    alert(productId ? '수정이 완료되었습니다.' : '등록이 완료되었습니다.');
-    navigate('/admin/product');
+
+    // 1. 새 상품 객체 생성
+    const newProduct = {
+      id: productId ? Number(productId) : Date.now(),
+      name: formData.name,
+      originalPrice: Number(formData.price),
+      discountPrice: formData.discountedPrice,
+      stock: Number(formData.stock),
+      imageUrl: formData.imageUrl || 'https://via.placeholder.com/150',
+    };
+
+    const savedProducts =
+      JSON.parse(localStorage.getItem('admin_products')) || [];
+
+    let updatedProducts;
+    if (productId) {
+      updatedProducts = savedProducts.map((p) =>
+        p.id === Number(productId) ? newProduct : p,
+      );
+    } else {
+      updatedProducts = [newProduct, ...savedProducts];
+    }
+
+    localStorage.setItem('admin_products', JSON.stringify(updatedProducts));
+
+    showToast(
+      productId ? '수정이 완료되었습니다.' : '등록이 완료되었습니다.',
+      'access',
+    );
+    navigate('/mypage/admin');
   };
 
   return (
@@ -124,7 +153,7 @@ export default function ProductForm() {
                   type="text"
                   value={formData.discountedPrice}
                   readOnly
-                  placeholder="할인된 가격(자동으로 계산돼서 나와야 해요!)"
+                  placeholder="할인된 가격"
                 />
                 <span>원</span>
               </div>

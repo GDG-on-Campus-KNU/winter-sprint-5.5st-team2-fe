@@ -38,8 +38,10 @@ function Header() {
     { label: '악세사리', path: '/', key: '/accessories' },
   ];
 
+  const myPagePath = admin ? '/mypage/admin' : '/mypage';
+
   const iconButton = [
-    { label: '마이페이지', path: '/mypage', key: '/my', icon: UserIcon },
+    { label: '마이페이지', path: myPagePath, key: '/my', icon: UserIcon },
     {
       label: '장바구니',
       path: '/cart',
@@ -48,6 +50,7 @@ function Header() {
     },
   ];
 
+  console.log(admin);
   return (
     <header className={style.header}>
       <NavButton
@@ -80,6 +83,15 @@ function Header() {
                 path={item.path}
                 Icon={item.icon}
                 className={Iconstyle.IconButton}
+                onClick={(e) => {
+                  if (admin && item.path === '/cart') {
+                    e.preventDefault();
+                    showToast(
+                      '관리자는 장바구니를 이용할 수 없습니다.',
+                      'error',
+                    );
+                  }
+                }}
               />
             ))}
           </nav>
