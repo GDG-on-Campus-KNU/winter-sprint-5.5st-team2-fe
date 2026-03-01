@@ -1,18 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { clearTokens } from '../api/client';
 
 const useAuthStore = create(
   persist(
     (set) => ({
       isLoggedIn: false,
       user: null,
-      admin: null,
-      login: (userData) =>
-        set({ isLoggedIn: true, user: userData, admin: null }),
-      adminLogin: (adminData) =>
-        set({ isLoggedIn: true, admin: adminData, user: null }),
+      setAuth: (userData) => set({ isLoggedIn: true, user: userData }),
       logout: () => {
-        set({ isLoggedIn: false, user: null, admin: null });
+        clearTokens();
+        set({ isLoggedIn: false, user: null });
       },
     }),
     {

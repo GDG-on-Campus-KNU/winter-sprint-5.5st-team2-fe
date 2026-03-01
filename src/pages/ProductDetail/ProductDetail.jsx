@@ -2,20 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addToCart } from '../../api/cart';
 import { shouldUseMock } from '../../api/client';
-import { getMenuDetail } from '../../api/menus';
-import { createOrder } from '../../api/orders';
+import { getProductDetail } from '../../api/products';
 import ProductDetailImages from '../../components/product/ProductDetailImages';
 import ProductSummary from '../../components/product/ProductSummary';
+import useCartStore from '../../store/useCartStore';
+import { useToast } from '../../context/ToastContext';
 import { fallbackImage, mockMenus } from '../../mocks/menus.mock';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const showToast = useToast();
+  const addCartItem = useCartStore((state) => state.addItem);
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  //api 연동 전 임시 로직
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  });
 
   //api 연동 전 임시 로직 추가
   useEffect(() => {
@@ -41,7 +52,14 @@ const ProductDetail = () => {
       try {
         setIsLoading(true);
         setError('');
-        const menu = await getMenuDetail(id, controller.signal);
+        const menu = await getProductDetail(id, controller.signal);
+        const resolvedSizes = Array.isArray(menu?.sizeOptions)
+          ? menu.sizeOptions
+          : Array.isArray(menu?.sizesOptions)
+            ? menu.sizesOptions
+            : Array.isArray(menu?.sizes)
+              ? menu.sizes
+              : [];
 
         setProduct({
           id: String(menu?.id ?? id),
@@ -51,7 +69,7 @@ const ProductDetail = () => {
           rating: Number(menu?.rating ?? 4.5),
           color: menu?.color ?? 'Black',
           colorHex: menu?.colorHex ?? '#111111',
-          sizes: menu?.sizes ?? ['S', 'M', 'L'],
+          sizes: resolvedSizes.map((size) => String(size)),
           originalPrice: Number(menu?.originalPrice ?? menu?.price ?? 0),
           discountRate: Number(menu?.discountRate ?? 0),
           imageUrl: menu?.imageUrl ?? menu?.image ?? fallbackImage,
@@ -98,47 +116,53 @@ const ProductDetail = () => {
       ? product.detailImages
       : [product.imageUrl];
 
-  const handleAddToCart = async ({ menuId, quantity }) => {
+  const handleAddToCart = async ({ productId, quantity, selectedSize }) => {
     const payload = {
-      menuId: Number(menuId),
+      productId: Number(productId),
       quantity,
+      selectedSize,
     };
 
     try {
       setIsSubmitting(true);
+      let createdCartItem = null;
       if (!shouldUseMock) {
-        await addToCart(payload);
+        createdCartItem = await addToCart(payload);
       }
-      navigate('/cart', { state: { payload } });
+      const resolvedCartItemId =
+        createdCartItem?.cartItemId ??
+        createdCartItem?.id ??
+        createdCartItem?.cart_item_id;
+      addCartItem(product, quantity, selectedSize, resolvedCartItemId);
+      showToast('장바구니에 담겼습니다.', 'success', {
+        actions: [
+          {
+            label: '장바구니 이동',
+            variant: 'primary',
+            onClick: () => navigate('/cart'),
+          },
+        ],
+      });
     } catch {
-      alert('장바구니 담기에 실패했습니다.');
+      showToast('장바구니 담기에 실패했습니다.', 'error');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleBuyNow = async ({ menuId, quantity }) => {
+  const handleBuyNow = ({ productId, quantity, selectedSize }) => {
     const payload = {
       orderItems: [
         {
-          menuId: Number(menuId),
+          menuId: Number(productId),
           quantity,
+          selectedSize,
         },
       ],
       couponId: null,
     };
 
-    try {
-      setIsSubmitting(true);
-      if (!shouldUseMock) {
-        await createOrder(payload);
-      }
-      navigate('/checkout', { state: { payload } });
-    } catch {
-      alert('구매 요청에 실패했습니다.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    navigate('/checkout', { state: { payload } });
   };
 
   return (

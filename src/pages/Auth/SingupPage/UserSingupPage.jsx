@@ -5,6 +5,8 @@ import AuthLayout from '../../../components/Auth/Authlayout';
 import { Authcomponent } from '../../../components/Auth/Authcomponent';
 import style from './UserSingupPage.module.css';
 import { useToast } from '../../../context/ToastContext';
+import { checkEmail, signupUser } from '../../../api/auth';
+import { shouldUseMock } from '../../../api/client';
 
 function UserSingupPage() {
   const [formData, setFormData] = useState({
@@ -28,7 +30,7 @@ function UserSingupPage() {
 
   const isLongEnough = formData.password.length >= 10;
 
-  const handleUserSignup = (e) => {
+  const handleUserSignup = async (e) => {
     e.preventDefault();
     // 1. 이메일 상태 최종 확인
     if (errorEmail !== '사용가능한 이메일입니다.') {
@@ -48,27 +50,55 @@ function UserSingupPage() {
       return;
     }
 
-    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
-    localStorage.setItem('users', JSON.stringify([...existingUsers, formData]));
-
-    showToast('회원가입이 완료되었습니다', 'success');
-    alert('회원가입 완료');
-    navigate('/login');
+    try {
+      if (shouldUseMock) {
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        users.push({
+          ...formData,
+          id: Date.now(),
+          role: 'USER',
+          name: formData.userName,
+        });
+        localStorage.setItem('users', JSON.stringify(users));
+      } else {
+        await signupUser(formData);
+      }
+      showToast('회원가입이 완료되었습니다', 'success');
+      navigate('/login');
+    } catch {
+      showToast('회원가입에 실패했습니다.', 'error');
+    }
   };
 
-  const handleEmailValid = (e) => {
+  const handleEmailValid = async (e) => {
     const value = e.target.value;
     setFormData({ ...formData, email: value });
     if (!validateEmail(value)) {
       setEmailError('유효하지 않은 이메일 형식입니다.');
       return;
     }
-    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
-    const isEmailTarget = existingUsers.some((user) => user.email === value);
-    if (isEmailTarget) {
-      setEmailError('이미 가입되어 있는 이메일입니다.');
-    } else {
-      setEmailError('사용가능한 이메일입니다.');
+    try {
+      if (shouldUseMock) {
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const admins = JSON.parse(localStorage.getItem('admins') || '[]');
+        const exists = [...users, ...admins].some(
+          (item) => item.email === value,
+        );
+        setEmailError(
+          exists
+            ? '이미 가입되어 있는 이메일입니다.'
+            : '사용가능한 이메일입니다.',
+        );
+      } else {
+        const data = await checkEmail(value);
+        setEmailError(
+          data?.isAvailable
+            ? '사용가능한 이메일입니다.'
+            : '이미 가입되어 있는 이메일입니다.',
+        );
+      }
+    } catch {
+      setEmailError('이메일 확인에 실패했습니다.');
     }
   };
 
@@ -78,7 +108,15 @@ function UserSingupPage() {
         onSubmit={handleUserSignup}
         style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
       >
-        <Authcomponent label="이름" placeholder="이름" required={true} />
+        <Authcomponent
+          label="이름"
+          placeholder="이름"
+          required={true}
+          value={formData.userName}
+          onChange={(e) =>
+            setFormData({ ...formData, userName: e.target.value })
+          }
+        />
         <Authcomponent
           label="이메일"
           placeholder="이메일 입력"
@@ -138,13 +176,24 @@ function UserSingupPage() {
             비밀번호가 일치합니다.
           </span>
         )}
-        <Authcomponent label="주소" placeholder="주소" required={true} />
+        <Authcomponent
+          label="전화번호"
+          placeholder="010-0000-0000"
+          required={true}
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+        />
+        <Authcomponent
+          label="주소"
+          placeholder="주소"
+          required={true}
+          value={formData.address}
+          onChange={(e) =>
+            setFormData({ ...formData, address: e.target.value })
+          }
+        />
 
-        <button
-          type="submit"
-          className={style.submit}
-          onClick={handleUserSignup}
-        >
+        <button type="submit" className={style.submit}>
           개인으로 회원가입
         </button>
       </form>

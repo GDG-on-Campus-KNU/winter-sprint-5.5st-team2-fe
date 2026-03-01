@@ -14,6 +14,7 @@ import AdminMyPage from './pages/MyPage/AdminMyPage';
 import ProductManage from './pages/MyPage/ProductManage';
 import ProductForm from './pages/MyPage/ProductForm';
 import ProductEdit from './pages/MyPage/ProductEdit';
+import MyPage from './pages/MyPage/UserMyPage';
 
 export default function App() {
   return (
@@ -27,7 +28,7 @@ export default function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/sing" element={<SingupPage />} />
+            <Route path="/singup" element={<SingupPage />} />
             <Route path="/singup/personal" element={<UserSingupPage />} />
             <Route path="/singup/admin" element={<AdminSingupPage />} />
             <Route path="/mypage/admin" element={<AdminMyPage />} />
@@ -43,6 +44,7 @@ export default function App() {
               path="/mypage/admin/product_edit/:productId"
               element={<ProductEdit />}
             />
+            <Route path="/mypage" element={<MyPage />} />
           </Routes>
         </Layout>
       </BrowserRouter>
