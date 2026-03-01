@@ -183,7 +183,10 @@ function CheckoutPage() {
 
   const handleSearchAddress = () => {
     if (!window.daum?.Postcode || !isPostcodeReady) {
-      showToast('주소 검색 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.', 'error');
+      showToast(
+        '주소 검색 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.',
+        'error',
+      );
       return;
     }
 

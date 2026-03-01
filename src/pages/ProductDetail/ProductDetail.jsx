@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { addToCart } from '../../api/cart';
 import { shouldUseMock } from '../../api/client';
 import { getProductDetail } from '../../api/products';
-import { createOrder } from '../../api/orders';
 import ProductDetailImages from '../../components/product/ProductDetailImages';
 import ProductSummary from '../../components/product/ProductSummary';
 import useCartStore from '../../store/useCartStore';
@@ -151,11 +150,11 @@ const ProductDetail = () => {
     }
   };
 
-  const handleBuyNow = async ({ productId, quantity, selectedSize }) => {
+  const handleBuyNow = ({ productId, quantity, selectedSize }) => {
     const payload = {
       orderItems: [
         {
-          productId: Number(productId),
+          menuId: Number(productId),
           quantity,
           selectedSize,
         },
@@ -163,17 +162,7 @@ const ProductDetail = () => {
       couponId: null,
     };
 
-    try {
-      setIsSubmitting(true);
-      if (!shouldUseMock) {
-        await createOrder(payload);
-      }
-      navigate('/checkout', { state: { payload } });
-    } catch {
-      alert('구매 요청에 실패했습니다.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    navigate('/checkout', { state: { payload } });
   };
 
   return (
