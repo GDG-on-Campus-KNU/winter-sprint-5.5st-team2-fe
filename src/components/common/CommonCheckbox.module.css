@@ -8,7 +8,7 @@
   /* 브라우저 기본 체크박스 제거 */
   appearance: none;
   -webkit-appearance: none;
-  
+
   /* 박스 기본 디자인 */
   width: 20px;
   height: 20px;
@@ -23,8 +23,8 @@
 
 /* 체크되었을 때: 배경은 하늘색, 체크 아이콘은 이미지로 삽입 */
 .styledInput:checked {
-  background-color: #1996D6;
-  border-color: #1996D6;
+  background-color: #1996d6;
+  border-color: #1996d6;
 }
 
 .styledInput:checked::after {
@@ -41,8 +41,8 @@
 
 /* 중간 상태일 때: 배경 하늘색, 하얀 막대기 표시 */
 .styledInput:indeterminate {
-  background-color: #1996D6;
-  border-color: #1996D6;
+  background-color: #1996d6;
+  border-color: #1996d6;
 }
 
 .styledInput:indeterminate::after {

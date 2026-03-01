@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../../store/useAuthStore';
 import useCartStore from '../../../store/useCartStore';
 import NavButton from '../NavButton';
@@ -13,27 +12,36 @@ import Navstyle from '../NavButton.module.css';
 import Iconstyle from '../IconButton.module.css';
 import style from './Header.module.css';
 import { useToast } from '../../../context/ToastContext';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
   const { isLoggedIn, logout, admin } = useAuthStore();
-  const navigate = useNavigate();
   const showToast = useToast();
   const cartItems = useCartStore((state) => state.cartItems);
   const clearCart = useCartStore((state) => state.clearCart);
-  const navigate = useNavigate();
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      if (!shouldUseMock) {
-        await logoutApi();
-      }
-    } finally {
-      clearCart();
-      logout();
-      navigate('/');
+
+ const handleLogout = async () => {
+ 
+  try {
+    if (!shouldUseMock) {
+      await logoutApi();
     }
-  };
+  } catch (err) {
+    console.error("서버 로그아웃 실패(무시하고 진행):", err);
+  } finally {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('isLoggedIn');
+
+    if (typeof clearCart === 'function') clearCart();
+    if (typeof logout === 'function') logout();
+
+    navigate('/');
+  }
+};
 
   const handleAdminAccess = (e, path) => {
     if (admin && path === '/') {
@@ -52,24 +60,27 @@ function Header() {
     { label: '악세사리', path: '/', key: '/accessories' },
   ];
 
-  const myPagePath = admin ? '/mypage/admin' : '/mypage';
+  const myPagePath = React.useMemo(() => 
+  admin ? '/mypage/admin' : '/mypage', 
+[admin]);
 
-  const iconButton = [
-    { label: '마이페이지', path: myPagePath, key: '/my', icon: UserIcon },
-    {
-      label: cartCount > 0 ? `장바구니(${cartCount})` : '장바구니',
-      path: '/cart',
-      key: '/cart',
-      icon: ShoppingBagIcon,
-    },
-  ];
+const iconButton = React.useMemo(() => [
+  { label: '마이페이지', path: myPagePath, key: '/my', icon: UserIcon },
+  {
+    label: cartCount > 0 ? `장바구니(${cartCount})` : '장바구니',
+    path: '/cart',
+    key: '/cart',
+    icon: ShoppingBagIcon,
+  },
+], [myPagePath, cartCount]);
+
 
   console.log(admin);
   return (
     <header className={style.header}>
       <NavButton
         key="/main"
-        label="서비스 이름"
+        label="GoodStyle"
         path="/"
         className={Navstyle.NavButton}
         onClick={(e) => handleAdminAccess(e, '/')}

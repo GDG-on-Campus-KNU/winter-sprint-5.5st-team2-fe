@@ -86,6 +86,14 @@
   align-items: center;
 }
 
+
+.inputGroup input:focus {
+  outline: none; 
+  border-color: #54A7DA; 
+  background-color: #fffff; 
+  transition: all 0.2s ease; 
+}
+
 .withUnit span {
   position: absolute;
   right: 15px;
