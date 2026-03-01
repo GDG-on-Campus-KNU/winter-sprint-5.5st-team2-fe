@@ -174,9 +174,6 @@ const ProductDetail = () => {
           onAddToCart={handleAddToCart}
           onBuyNow={handleBuyNow}
         />
-        {!isLoading && (
-          <ProductDetailImages images={detailImages} name={product.name} />
-        )}
         <ProductDetailImages images={detailImages} name={product.name} />
       </div>
     </section>
