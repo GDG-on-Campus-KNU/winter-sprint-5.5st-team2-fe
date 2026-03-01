@@ -40,7 +40,6 @@ function ProductSummary({
       </article>
     );
   }
-  const sizeOptions = product.sizes?.length ? product.sizes : ['S', 'M', 'L'];
   const galleryImages =
     product.galleryImages?.length > 0
       ? product.galleryImages

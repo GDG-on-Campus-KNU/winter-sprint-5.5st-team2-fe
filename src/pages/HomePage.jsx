@@ -54,7 +54,13 @@ export default function HomePage() {
     fetchProducts();
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
     }, 1500);
+
     return () => clearTimeout(timer);
   }, [page, sort]);
 
@@ -108,7 +114,6 @@ export default function HomePage() {
       <RecommendSection
         title="오늘 들어온 상품"
         products={pagedProducts}
-        products={recommendProducts}
         isLoading={isLoading}
         sort={sort}
         onSortChange={(nextSort) => {
