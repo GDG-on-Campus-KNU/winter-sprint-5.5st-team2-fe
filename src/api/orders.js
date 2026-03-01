@@ -32,7 +32,7 @@ export async function cancelOrder(orderId) {
 }
 
 export async function confirmPayment(payload) {
-  return apiRequest('/api/payments/confirm', {
+  return apiRequest('/api/orders/payments/confirm', {
     method: 'POST',
     body: payload,
     auth: true,
