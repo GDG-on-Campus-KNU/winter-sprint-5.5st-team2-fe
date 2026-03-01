@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import CommonCheckbox from '../common/CommonCheckbox';
 import styles from './CartItemCard.module.css';
 
@@ -13,6 +13,7 @@ function CartItemCard({
   onSizeChange,
   onQuantityChange,
   onRemove,
+  onOpenCouponModal,
 }) {
   const brandCheckboxId = `brand-checkbox-${brand.replace(/\s+/g, '-').toLowerCase()}`;
   const [expandedItemIds, setExpandedItemIds] = useState([]);
@@ -66,13 +67,23 @@ function CartItemCard({
                   <p className={styles.optionSummaryText}>
                     옵션: {item.selectedSize} / 수량: {item.quantity}개
                   </p>
-                  <button
-                    type="button"
-                    className={styles.changeButton}
-                    onClick={() => toggleOptionEditor(item.cartItemId)}
-                  >
-                    변경
-                  </button>
+                  <div className={styles.buttonGroup}>
+                    <button
+                      type="button"
+                      className={styles.changeButton}
+                      onClick={() => toggleOptionEditor(item.cartItemId)}
+                    >
+                      변경
+                    </button>
+
+                    <button
+                      type="button"
+                      className={styles.couponButton}
+                      onClick={() => onOpenCouponModal?.(item.cartItemId)}
+                    >
+                      쿠폰 적용
+                    </button>
+                  </div>
                 </div>
 
                 {isOptionEditorOpen ? (
