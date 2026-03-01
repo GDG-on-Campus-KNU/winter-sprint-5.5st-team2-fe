@@ -10,7 +10,8 @@ import LoginPage from './pages/Auth/LoginPage/LoginPage';
 import SingupPage from './pages/Auth/SingupPage/SingupPage';
 import UserSingupPage from './pages/Auth/SingupPage/UserSingupPage';
 import AdminSingupPage from './pages/Auth/SingupPage/AdminSingupPage';
-import MyPage from './pages/MyPage/UserMyPage';
+import AdminMyPage from './pages/MyPage/AdminMyPage';
+import ProductManage from './pages/MyPage/ProductManage';
 
 export default function App() {
   return (
@@ -24,10 +25,11 @@ export default function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/singup" element={<SingupPage />} />
+            <Route path="/sing" element={<SingupPage />} />
             <Route path="/singup/personal" element={<UserSingupPage />} />
             <Route path="/singup/admin" element={<AdminSingupPage />} />
-            <Route path="/mypage" element={<MyPage />} />
+            <Route path = "/mypage/admin" element = {<AdminMyPage/>}/>
+            <Route path = "/mypage/admin/product_manage" element = {<ProductManage/>}/>
           </Routes>
         </Layout>
       </BrowserRouter>

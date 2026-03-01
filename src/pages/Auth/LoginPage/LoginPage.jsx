@@ -5,6 +5,7 @@ import useAuthStore from '../../../store/useAuthStore';
 import AuthLayout from '../../../components/Auth/Authlayout';
 import style from './LoginPage.module.css';
 import { useToast } from '../../../context/ToastContext';
+import { MOCK_ADMIN_DATA } from '../../../mocks/admin';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -14,6 +15,7 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const showToast = useToast();
+  const { adminLogin } = useAuthStore();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -28,6 +30,7 @@ function LoginPage() {
       (u) => u.email === email && u.password === password,
     );
 
+    // 1. 어떤 계정인지 확인
     const account = foundUser || foundAdmin;
 
     if (account) {
@@ -35,9 +38,18 @@ function LoginPage() {
       if (isAutoLogin) {
         localStorage.setItem('autoLoginUser', JSON.stringify(account));
       }
+      
       showToast(`${account.userName || '사용자'}님, 환영합니다!`, 'success');
+
       setTimeout(() => {
-        navigate('/');
+        if (foundAdmin) {
+          adminLogin(MOCK_ADMIN_DATA);
+          console.log(MOCK_ADMIN_DATA)
+          navigate('/mypage/admin'); 
+          showToast('관리자님, 환영합니다!', 'success');
+        } else {
+          navigate('/');
+        }
       }, 100);
     } else {
       showToast('이메일 또는 비밀번호를 확인해주세요', 'error');
