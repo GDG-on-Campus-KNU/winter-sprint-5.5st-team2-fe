@@ -5,41 +5,50 @@ import useAuthStore from '../../../store/useAuthStore';
 import AuthLayout from '../../../components/Auth/Authlayout';
 import style from './LoginPage.module.css';
 import { useToast } from '../../../context/ToastContext';
+import { login as loginApi } from '../../../api/auth';
+import { shouldUseMock } from '../../../api/client';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isAutoLogin, setIsAutoLogin] = useState(false);
-  const { login } = useAuthStore();
+  const { setAuth } = useAuthStore();
   const navigate = useNavigate();
 
   const showToast = useToast();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    const savedUsers = JSON.parse(localStorage.getItem('users') || '[]');
-    const savedAdmins = JSON.parse(localStorage.getItem('admins') || '[]');
+    try {
+      if (shouldUseMock) {
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const admins = JSON.parse(localStorage.getItem('admins') || '[]');
+        const account = [...users, ...admins].find(
+          (item) => item.email === email && item.password === password,
+        );
 
-    const foundUser = savedUsers.find(
-      (u) => u.email === email && u.password === password,
-    );
-    const foundAdmin = savedAdmins.find(
-      (u) => u.email === email && u.password === password,
-    );
+        if (!account) {
+          throw new Error('Invalid credentials');
+        }
 
-    const account = foundUser || foundAdmin;
-
-    if (account) {
-      login(account);
-      if (isAutoLogin) {
-        localStorage.setItem('autoLoginUser', JSON.stringify(account));
+        const normalizedUser = {
+          id: account.id ?? Date.now(),
+          role: account.role ?? 'USER',
+          name: account.userName ?? account.name ?? account.store ?? '사용자',
+          email: account.email,
+        };
+        setAuth(normalizedUser);
+        showToast(`${normalizedUser.name}님, 환영합니다!`, 'success');
+      } else {
+        const data = await loginApi({ email, password });
+        setAuth(data?.user ?? null);
+        showToast(`${data?.user?.name || '사용자'}님, 환영합니다!`, 'success');
       }
-      showToast(`${account.userName || '사용자'}님, 환영합니다!`, 'success');
+
       setTimeout(() => {
         navigate('/');
       }, 100);
-    } else {
+    } catch {
       showToast('이메일 또는 비밀번호를 확인해주세요', 'error');
     }
   };
@@ -63,17 +72,6 @@ function LoginPage() {
             placeholder="비밀번호 입력"
             required
           />
-
-          <div className={style.autoLoginWrapper}>
-            <input
-              type="checkbox"
-              checked={isAutoLogin}
-              id="autoLogin"
-              onChange={(e) => setIsAutoLogin(e.target.checked)}
-            />
-            <label>자동 로그인</label>
-          </div>
-
           <button className={style.inputbutton} type="submit">
             로그인
           </button>

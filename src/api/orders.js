@@ -1,19 +1,40 @@
-import { getApiBaseUrl } from './client';
+import { apiRequest } from './client';
 
 export async function createOrder(payload) {
-  const requestUrl = `${getApiBaseUrl()}/api/orders`;
-  const response = await fetch(requestUrl, {
+  return apiRequest('/api/orders', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
+    body: payload,
+    auth: true,
   });
+}
 
-  if (!response.ok) {
-    throw new Error(`주문 생성 실패: ${response.status}`);
-  }
+export async function getOrder(orderId, signal) {
+  return apiRequest(`/api/orders/${orderId}`, {
+    method: 'GET',
+    signal,
+    auth: true,
+  });
+}
 
-  const result = await response.json();
-  return result?.data ?? result;
+export async function getMyOrders(signal) {
+  return apiRequest('/api/orders', {
+    method: 'GET',
+    signal,
+    auth: true,
+  });
+}
+
+export async function cancelOrder(orderId) {
+  return apiRequest(`/api/orders/${orderId}/cancel`, {
+    method: 'POST',
+    auth: true,
+  });
+}
+
+export async function confirmPayment(payload) {
+  return apiRequest('/api/payments/confirm', {
+    method: 'POST',
+    body: payload,
+    auth: true,
+  });
 }

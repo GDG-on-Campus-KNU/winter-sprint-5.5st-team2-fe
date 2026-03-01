@@ -7,19 +7,45 @@ import {
 } from 'react-icons/fi';
 import CommonButton from '../common/CommonButton';
 import styles from './ProductSummary.module.css';
+import Skeleton from '../../components/common/skeleton/Skeleton';
 
 function ProductSummary({
   product,
   isSubmitting = false,
   onAddToCart,
   onBuyNow,
+  isLoading,
 }) {
-  const sizeOptions = product.sizes?.length ? product.sizes : ['S', 'M', 'L'];
+  if (isLoading || !product) {
+    return (
+      <article className={styles.detailLayout}>
+        <div className={styles.imageSection}>
+          <Skeleton width="100%" height="100%" borderRadius="12px" />
+        </div>
+
+        <div className={styles.content}>
+          <Skeleton width="30%" height="14px" />
+          <Skeleton width="20%" height="14px" />
+          <Skeleton width="100%" height="32px" className={styles.name} />
+          <Skeleton width="50%" height="24px" />
+          <div style={{ marginTop: '20px' }}>
+            <Skeleton width="100%" height="100px" />
+          </div>
+          <div className={styles.actionButtons} style={{ marginTop: 'auto' }}>
+            <Skeleton width="100%" height="48px" borderRadius="8px" />
+            <Skeleton width="100%" height="48px" borderRadius="8px" />
+          </div>
+        </div>
+      </article>
+    );
+  }
+
+  const sizeOptions = product.sizes?.length ? product.sizes : [];
   const galleryImages =
     product.galleryImages?.length > 0
       ? product.galleryImages
       : [product.imageUrl];
-  const defaultSize = sizeOptions[0];
+  const defaultSize = sizeOptions[0] ?? '';
   const colorName = product.color ?? '기본';
   const colorHex = product.colorHex ?? '#111111';
 
@@ -41,7 +67,8 @@ function ProductSummary({
   );
 
   const isSoldOut = product.available === false || Number(product.stock) === 0;
-  const isActionDisabled = isSoldOut || isSubmitting;
+  const isSizeUnavailable = sizeOptions.length === 0;
+  const isActionDisabled = isSoldOut || isSizeUnavailable || isSubmitting;
 
   return (
     <article className={styles.detailLayout}>
@@ -141,13 +168,18 @@ function ProductSummary({
           <select
             className={styles.sizeSelect}
             value={selectedSize}
+            disabled={isSizeUnavailable}
             onChange={(event) => setSelectedSize(event.target.value)}
           >
-            {sizeOptions.map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
+            {isSizeUnavailable ? (
+              <option value="">사이즈 없음</option>
+            ) : (
+              sizeOptions.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))
+            )}
           </select>
         </div>
 
@@ -178,14 +210,26 @@ function ProductSummary({
             fullWidth
             disabled={isActionDisabled}
             icon={<FiShoppingCart size={18} />}
-            onClick={() => onAddToCart?.({ menuId: product.id, quantity })}
+            onClick={() =>
+              onAddToCart?.({
+                productId: product.id,
+                quantity,
+                selectedSize,
+              })
+            }
           >
             장바구니 담기
           </CommonButton>
           <CommonButton
             fullWidth
             disabled={isActionDisabled}
-            onClick={() => onBuyNow?.({ menuId: product.id, quantity })}
+            onClick={() =>
+              onBuyNow?.({
+                productId: product.id,
+                quantity,
+                selectedSize,
+              })
+            }
           >
             {isSoldOut ? '품절' : isSubmitting ? '처리 중...' : '구매하기'}
           </CommonButton>

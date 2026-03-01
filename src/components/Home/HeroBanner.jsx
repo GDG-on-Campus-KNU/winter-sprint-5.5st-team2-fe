@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './HeroBanner.module.css';
 import ProductGrid from '../common/ProductGrid';
+import Skeleton from '../common/skeleton/Skeleton';
 
 export default function HeroBanner({
   imageSrc,
@@ -8,6 +9,7 @@ export default function HeroBanner({
   subtitle,
   sectionTitle,
   onClick,
+  isLoading,
 }) {
   const mockProducts = [
     {
@@ -47,20 +49,37 @@ export default function HeroBanner({
       price: 49000,
     },
   ];
+
   return (
     <div className={styles.heroWrap}>
-      <section className={styles.promoSection} onClick={onClick}>
-        <img className={styles.image} src={imageSrc} alt={title} />
-
-        <div className={styles.overlay}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.subtitle}>{subtitle}</p>
-        </div>
+      <section
+        className={styles.promoSection}
+        onClick={!isLoading ? onClick : undefined}
+      >
+        {isLoading ? (
+          <Skeleton width="100%" height="100%" borderRAdius="12px" />
+        ) : (
+          <>
+            <img className={styles.image} src={imageSrc} alt={title} />
+            <div className={styles.overlay}>
+              <h2 className={styles.title}>{title}</h2>
+              <p className={styles.subtitle}>{subtitle}</p>
+            </div>
+          </>
+        )}
       </section>
 
       <div className={styles.rightArea}>
-        <h2 className={styles.sectionTitle}>{sectionTitle}</h2>
-        <ProductGrid products={mockProducts} variant="featured" />
+        {isLoading ? (
+          <Skeleton width="60%" height="38px" borderRadius="4px" />
+        ) : (
+          <h2 className={styles.sectionTitle}>{sectionTitle}</h2>
+        )}
+        <ProductGrid
+          products={mockProducts}
+          variant="featured"
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );

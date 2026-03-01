@@ -20,7 +20,13 @@
   box-sizing: border-box;
   padding: 0 12px;
   border: 1px solid #d7d7d7;
+  border-radius: 4px;
   font: 16px;
+}
+
+.inputGroup input:focus {
+  border: 2px solid #54a7da;
+  outline: none;
 }
 
 .inputbutton {
@@ -87,6 +93,6 @@
 }
 
 .autoLoginWrapper input[type='checkbox']:checked {
-  background-color: #d7d7d7; /* 체크 시 배경색 (검정색 예시) */
+  background-color: #54a7da; /* 체크 시 배경색 (검정색 예시) */
   border-color: #000;
 }
