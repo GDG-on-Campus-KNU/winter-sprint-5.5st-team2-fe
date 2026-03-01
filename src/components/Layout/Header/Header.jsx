@@ -23,8 +23,8 @@ function Header() {
 
   const handleAdminAccess = (e, path) => {
     if (admin && path === '/') {
-      e.preventDefault(); 
-      showToast('관리자는 메인페이지로 이동할 수 없습니다.','error'); 
+      e.preventDefault();
+      showToast('관리자는 메인페이지로 이동할 수 없습니다.', 'error');
       return;
     }
   };
@@ -55,7 +55,7 @@ function Header() {
         label="서비스 이름"
         path="/"
         className={Navstyle.NavButton}
-        onClick = {(e) => handleAdminAccess(e, '/')}
+        onClick={(e) => handleAdminAccess(e, '/')}
       />
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>

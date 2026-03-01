@@ -7,7 +7,7 @@
 }
 .container {
   display: flex; /* 제목과 콘텐츠를 가로로 배치 */
-  gap: 60px;     /* 제목과 리스트 사이 여백 */
+  gap: 60px; /* 제목과 리스트 사이 여백 */
   width: 100%;
   max-width: 1200px;
   padding: 0 20px;
@@ -18,7 +18,8 @@
   flex-shrink: 0;
 }
 
-.sideTitle h1, .sideTitle h2 {
+.sideTitle h1,
+.sideTitle h2 {
   font-size: 32px;
   font-weight: bold;
   margin: 0;
@@ -133,12 +134,31 @@
   justify-content: center;
 }
 
-.name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-.oldPrice { font-size: 13px; color: #999; text-decoration: line-through; }
-.price { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
-.delivery { font-size: 13px; color: #666; margin-bottom: 12px; }
+.name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.oldPrice {
+  font-size: 13px;
+  color: #999;
+  text-decoration: line-through;
+}
+.price {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.delivery {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 12px;
+}
 
-.badgeGroup { display: flex; gap: 8px; }
+.badgeGroup {
+  display: flex;
+  gap: 8px;
+}
 .badge {
   padding: 4px 10px;
   border: 1px solid #e0e0e0;

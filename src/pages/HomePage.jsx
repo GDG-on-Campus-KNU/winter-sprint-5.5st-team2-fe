@@ -14,15 +14,14 @@ export default function HomePage() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(()=> {
-    if(admin){
-      navigate('/mypage/admin', {replace: true});
+  useEffect(() => {
+    if (admin) {
+      navigate('/mypage/admin', { replace: true });
     }
-  },[admin, navigate]);
+  }, [admin, navigate]);
 
   //api 연동 전 임시 로직
   useEffect(() => {
-
     if (admin) return;
 
     const timer = setTimeout(() => {
