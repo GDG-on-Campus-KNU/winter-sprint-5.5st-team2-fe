@@ -1,11 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { getMyProfile } from '../../api/auth';
+import { shouldUseMock } from '../../api/client';
 import { createOrder, getOrder } from '../../api/orders';
 import CartSummaryCard from '../../components/Cart/CartSummaryCard';
 import CommonButton from '../../components/common/CommonButton';
 import CommonInput from '../../components/common/CommonInput';
 import { useToast } from '../../context/ToastContext';
 import { mockMenus } from '../../mocks/menus.mock';
+import useAuthStore from '../../store/useAuthStore';
 import styles from './CheckoutPage.module.css';
 
 const DEFAULT_SHIPPING_FEE = 3000;
@@ -24,6 +27,8 @@ const PAYMENT_METHODS = [
 function CheckoutPage() {
   const location = useLocation();
   const showToast = useToast();
+  const user = useAuthStore((state) => state.user);
+  const setAuth = useAuthStore((state) => state.setAuth);
   const orderItems = location.state?.payload?.orderItems ?? [];
   const [currentOrderId, setCurrentOrderId] = useState(
     location.state?.orderId ?? null,
@@ -41,6 +46,46 @@ function CheckoutPage() {
     detailAddress: '',
   });
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
+
+  useEffect(() => {
+    if (shouldUseMock) {
+      return;
+    }
+
+    const controller = new AbortController();
+
+    const fetchMyProfile = async () => {
+      try {
+        const profile = await getMyProfile(controller.signal);
+        if (profile) {
+          setAuth(profile);
+        }
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          // Ignore profile fetch failure and keep current form values.
+        }
+      }
+    };
+
+    fetchMyProfile();
+
+    return () => controller.abort();
+  }, [setAuth]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    setFormValues((prev) => ({
+      ...prev,
+      name: prev.name || user.name || user.userName || '',
+      phone: prev.phone || user.phone || '',
+      zipCode: prev.zipCode || user.zipCode || user.postCode || '',
+      address: prev.address || user.address || '',
+      detailAddress: prev.detailAddress || user.detailAddress || '',
+    }));
+  }, [user]);
 
   useEffect(() => {
     if (!currentOrderId) {

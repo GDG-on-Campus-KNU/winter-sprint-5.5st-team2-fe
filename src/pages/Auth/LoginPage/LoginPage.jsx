@@ -5,7 +5,7 @@ import useAuthStore from '../../../store/useAuthStore';
 import AuthLayout from '../../../components/Auth/Authlayout';
 import style from './LoginPage.module.css';
 import { useToast } from '../../../context/ToastContext';
-import { login as loginApi } from '../../../api/auth';
+import { getMyProfile, login as loginApi } from '../../../api/auth';
 import { shouldUseMock } from '../../../api/client';
 
 function LoginPage() {
@@ -40,9 +40,13 @@ function LoginPage() {
         setAuth(normalizedUser);
         showToast(`${normalizedUser.name}님, 환영합니다!`, 'success');
       } else {
-        const data = await loginApi({ email, password });
-        setAuth(data?.user ?? null);
-        showToast(`${data?.user?.name || '사용자'}님, 환영합니다!`, 'success');
+        await loginApi({ email, password });
+        const profile = await getMyProfile();
+        setAuth(profile ?? null);
+        showToast(
+          `${profile?.userName || profile?.name || '사용자'}님, 환영합니다!`,
+          'success',
+        );
       }
 
       setTimeout(() => {
