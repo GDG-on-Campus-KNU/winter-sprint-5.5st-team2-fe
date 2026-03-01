@@ -16,8 +16,7 @@ function ProductSummary({
   onBuyNow,
   isLoading,
 }) {
-  const sizeOptions = product.sizes?.length ? product.sizes : [];
-  if (isLoading) {
+  if (isLoading || !product) {
     return (
       <article className={styles.detailLayout}>
         <div className={styles.imageSection}>
@@ -40,7 +39,8 @@ function ProductSummary({
       </article>
     );
   }
-  const sizeOptions = product.sizes?.length ? product.sizes : ['S', 'M', 'L'];
+
+  const sizeOptions = product.sizes?.length ? product.sizes : [];
   const galleryImages =
     product.galleryImages?.length > 0
       ? product.galleryImages

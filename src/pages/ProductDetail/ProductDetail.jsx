@@ -130,7 +130,11 @@ const ProductDetail = () => {
       if (!shouldUseMock) {
         createdCartItem = await addToCart(payload);
       }
-      addCartItem(product, quantity, selectedSize, createdCartItem?.cartItemId);
+      const resolvedCartItemId =
+        createdCartItem?.cartItemId ??
+        createdCartItem?.id ??
+        createdCartItem?.cart_item_id;
+      addCartItem(product, quantity, selectedSize, resolvedCartItemId);
       showToast('장바구니에 담겼습니다.', 'success', {
         actions: [
           {
