@@ -7,6 +7,8 @@ import CommonCheckbox from '../../components/common/CommonCheckbox';
 import useCartStore from '../../store/useCartStore';
 import styles from './CartPage.module.css';
 
+import CouponModal from '../../components/common/CouponModal';
+
 const DEFAULT_SHIPPING_FEE = 3000;
 
 function CartPage() {
@@ -17,6 +19,10 @@ function CartPage() {
   const updateItemSize = useCartStore((state) => state.updateItemSize);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
   const hasInitializedSelection = useRef(false);
+
+  const applyCouponToItem = useCartStore((state) => state.applyCouponToItem);
+  const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
+  const [couponTargetCartItemId, setCouponTargetCartItemId] = useState(null);
 
   useEffect(() => {
     const allIds = cartItems.map((item) => item.cartItemId);
@@ -136,6 +142,22 @@ function CartPage() {
     navigate('/checkout', { state: { payload } });
   };
 
+  const openCouponModalForItem = (cartItemId) => {
+    setCouponTargetCartItemId(cartItemId);
+    setIsCouponModalOpen(true);
+  };
+
+  const closeCouponModal = () => {
+    setIsCouponModalOpen(false);
+    setCouponTargetCartItemId(null);
+  };
+
+  const handleSelectCoupon = (coupon) => {
+    if (!couponTargetCartItemId) return;
+    applyCouponToItem(couponTargetCartItemId, coupon.id);
+    closeCouponModal();
+  };
+
   if (cartItems.length === 0) {
     return (
       <section className={styles.page}>
@@ -193,6 +215,7 @@ function CartPage() {
               onSizeChange={handleSizeChange}
               onQuantityChange={handleQuantityChange}
               onRemove={handleRemoveItem}
+              onOpenCouponModal={openCouponModalForItem}
             />
           ))}
         </div>
@@ -206,6 +229,13 @@ function CartPage() {
           onContinueShopping={() => navigate('/')}
         />
       </div>
+
+      <CouponModal
+        open={isCouponModalOpen}
+        onClose={closeCouponModal}
+        coupons={[]}
+        onSelectCoupon={handleSelectCoupon}
+      />
     </section>
   );
 }

@@ -40,6 +40,7 @@ const normalizeCartItem = (product, quantity = 1, selectedSize, cartItemId) => {
     sizeOptions,
     selectedSize: normalizedSelectedSize,
     quantity: Math.max(1, Number(quantity) || 1),
+    appliedCouponId: product?.appliedCouponId ?? null,
   };
 };
 
@@ -64,6 +65,7 @@ const migrateCartItems = (items = []) =>
           ? item.sizeOptions
           : ['FREE'],
       quantity: Math.max(1, Number(item?.quantity) || 1),
+      appliedCouponId: item?.appliedCouponId ?? null,
     };
   });
 
@@ -170,6 +172,24 @@ const useCartStore = create(
               ),
           };
         }),
+      applyCouponToItem: (targetCartItemId, couponId) =>
+        set((state) => ({
+          cartItems: state.cartItems.map((item) =>
+            item.cartItemId === String(targetCartItemId)
+              ? { ...item, appliedCouponId: couponId ? String(couponId) : null }
+              : item,
+          ),
+        })),
+
+      removeCouponFromItem: (targetCartItemId) =>
+        set((state) => ({
+          cartItems: state.cartItems.map((item) =>
+            item.cartItemId === String(targetCartItemId)
+              ? { ...item, appliedCouponId: null }
+              : item,
+          ),
+        })),
+
       clearCart: () => set({ cartItems: [], nextLocalCartItemId: 1 }),
     }),
     {
