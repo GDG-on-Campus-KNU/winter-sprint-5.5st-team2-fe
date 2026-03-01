@@ -1,0 +1,68 @@
+.card {
+  width: 792px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+}
+
+.header {
+  margin: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.date {
+  font-size: 16px;
+  font-weight: 600;
+  color: #191919;
+}
+
+.summary {
+  font-size: 16px;
+  font-weight: 400;
+  color: #191919;
+}
+
+.divider {
+  height: 1px;
+  background: #d7d7d7;
+  margin: 12px 0 14px;
+}
+
+/* ✅ 텍스트-라인-텍스트-라인... 한 줄 */
+.progressWrap {
+  margin: 12px 20px;
+  display: flex;
+  align-items: center;
+  width: calc(100% - 40px);
+}
+
+.step {
+  flex: 0 0 auto; /* 텍스트는 자기 크기만 */
+  font-size: 16px;
+  font-weight: 400;
+  color: #191919;
+  white-space: nowrap;
+}
+
+.stepCurrent {
+  color: #1996d6;
+  font-weight: 400;
+}
+
+/* ✅ 라인은 '항상 공간 차지'하지만 기본은 안 보이게 */
+.line {
+  flex: 1 1 0; /* 텍스트 사이 공간을 라인이 먹어줌 */
+  height: 1px;
+  margin: 0 12px;
+  border-radius: 2px;
+  background: linear-gradient(to right, #1996d6 0%, #191919 100%);
+
+  opacity: 0; /* 기본은 숨김 */
+}
+
+/* ✅ 현재 구간만 보이게 */
+.lineVisible {
+  opacity: 1;
+}

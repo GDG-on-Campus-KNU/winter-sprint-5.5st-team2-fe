@@ -17,6 +17,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState([]);
 
+  //api 연동 전 임시 로직
   useEffect(() => {
     if (shouldUseMock) {
       setProducts(mockMenuList);
@@ -53,6 +54,9 @@ export default function HomePage() {
     fetchProducts();
     return () => controller.abort();
   }, []);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [page, sort]);
 
   const recommendProducts = useMemo(
     () =>
@@ -104,6 +108,7 @@ export default function HomePage() {
       <RecommendSection
         title="오늘 들어온 상품"
         products={pagedProducts}
+        products={recommendProducts}
         isLoading={isLoading}
         sort={sort}
         onSortChange={(nextSort) => {
