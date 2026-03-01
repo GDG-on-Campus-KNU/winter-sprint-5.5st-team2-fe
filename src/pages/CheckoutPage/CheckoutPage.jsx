@@ -23,6 +23,8 @@ const PAYMENT_METHODS = [
   '네이버페이',
   '삼성페이',
 ];
+const DAUM_POSTCODE_SCRIPT_URL =
+  'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
 
 function CheckoutPage() {
   const location = useLocation();
@@ -37,6 +39,7 @@ function CheckoutPage() {
   const [isOrderLoading, setIsOrderLoading] = useState(false);
   const [orderError, setOrderError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPostcodeReady, setIsPostcodeReady] = useState(false);
 
   const [formValues, setFormValues] = useState({
     name: '',
@@ -46,6 +49,33 @@ function CheckoutPage() {
     detailAddress: '',
   });
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
+
+  useEffect(() => {
+    if (window.daum?.Postcode) {
+      setIsPostcodeReady(true);
+      return;
+    }
+
+    const existingScript = document.querySelector(
+      `script[src="${DAUM_POSTCODE_SCRIPT_URL}"]`,
+    );
+
+    if (existingScript) {
+      const handleReady = () => setIsPostcodeReady(true);
+      existingScript.addEventListener('load', handleReady);
+      return () => existingScript.removeEventListener('load', handleReady);
+    }
+
+    const script = document.createElement('script');
+    script.src = DAUM_POSTCODE_SCRIPT_URL;
+    script.async = true;
+
+    const handleLoad = () => setIsPostcodeReady(true);
+    script.addEventListener('load', handleLoad);
+    document.body.appendChild(script);
+
+    return () => script.removeEventListener('load', handleLoad);
+  }, []);
 
   useEffect(() => {
     if (shouldUseMock) {
@@ -149,6 +179,36 @@ function CheckoutPage() {
 
   const handleInputChange = (key) => (event) => {
     setFormValues((prev) => ({ ...prev, [key]: event.target.value }));
+  };
+
+  const handleSearchAddress = () => {
+    if (!window.daum?.Postcode || !isPostcodeReady) {
+      showToast('주소 검색 모듈을 불러오는 중입니다. 잠시 후 다시 시도해주세요.', 'error');
+      return;
+    }
+
+    new window.daum.Postcode({
+      oncomplete: (data) => {
+        const roadAddress = data.roadAddress || data.jibunAddress || '';
+        const extras = [];
+
+        if (data.bname && /(동|로|가)$/.test(data.bname)) {
+          extras.push(data.bname);
+        }
+
+        if (data.buildingName && data.apartment === 'Y') {
+          extras.push(data.buildingName);
+        }
+
+        const extraAddress = extras.length > 0 ? ` (${extras.join(', ')})` : '';
+
+        setFormValues((prev) => ({
+          ...prev,
+          zipCode: data.zonecode || '',
+          address: `${roadAddress}${extraAddress}`.trim(),
+        }));
+      },
+    }).open();
   };
 
   const handleCheckout = async () => {
@@ -256,6 +316,7 @@ function CheckoutPage() {
               <CommonButton
                 variant="secondary"
                 className={styles.searchAddressButton}
+                onClick={handleSearchAddress}
               >
                 우편번호 검색
               </CommonButton>
