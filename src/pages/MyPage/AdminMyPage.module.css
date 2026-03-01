@@ -1,15 +1,15 @@
 .container {
-  width : 792px;
+  width: 792px;
   margin: 0 auto;
   padding: 40px 20px;
-  hegiht : 263px;
+  hegiht: 263px;
 }
 
 .pageTitle {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 30px;
-  text-align: center; 
+  text-align: center;
 }
 
 .profileCard {
@@ -22,12 +22,12 @@
   margin-bottom: 40px;
 }
 
-.profileInfo{
-    display : flex;
-    flex-direction : column;
-    align-itmes: flex-start;
-    justify-content: center;
-    flex : 1;
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  align-itmes: flex-start;
+  justify-content: center;
+  flex: 1;
 }
 
 .logoCircle {
@@ -43,15 +43,15 @@
 .adminButton {
   background-color: #111;
   color: #fff;
-  padding: 8px 16px; 
+  padding: 8px 16px;
   border-radius: 4px;
   font-size: 14px;
   cursor: pointer;
   border: none;
-  
-  width: fit-content;    
-  white-space: nowrap;  
-  display: inline-block; 
+
+  width: fit-content;
+  white-space: nowrap;
+  display: inline-block;
   text-align: center;
 }
 .orderList {
@@ -82,6 +82,6 @@
   cursor: pointer;
 }
 
-.teamName{
-    font-Size : 24px;
+.teamName {
+  font-size: 24px;
 }

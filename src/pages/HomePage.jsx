@@ -4,21 +4,32 @@ import HeroBanner from '../components/Home/HeroBanner';
 import BannerImg from '../assets/BannerImage.png';
 import RecommendSection from '../components/Home/RecommendSection';
 import { mockMenuList } from '../mocks/menus.mock';
+import useAuthStore from '../store/useAuthStore';
 
 export default function HomePage() {
   const navigate = useNavigate();
 
+  const { admin } = useAuthStore();
   const [sort, setSort] = useState('recommend');
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(()=> {
+    if(admin){
+      navigate('/mypage/admin', {replace: true});
+    }
+  },[admin, navigate]);
+
   //api 연동 전 임시 로직
   useEffect(() => {
+
+    if (admin) return;
+
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1500);
     return () => clearTimeout(timer);
-  }, [page, sort]);
+  }, [page, sort, admin]);
 
   const recommendProducts = useMemo(
     () =>
@@ -34,6 +45,8 @@ export default function HomePage() {
   );
 
   const totalPages = 5;
+
+  if (admin) return null;
 
   return (
     <div>

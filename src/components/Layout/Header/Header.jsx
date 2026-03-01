@@ -9,14 +9,24 @@ import Logout from '../../../assets/logout.png';
 import Navstyle from '../NavButton.module.css';
 import Iconstyle from '../IconButton.module.css';
 import style from './Header.module.css';
+import { useToast } from '../../../context/ToastContext';
 
 function Header() {
-  const { isLoggedIn, logout } = useAuthStore();
+  const { isLoggedIn, logout, admin } = useAuthStore();
   const navigate = useNavigate();
+  const showToast = useToast();
 
   const handleLogout = () => {
     logout(); //스토어 상태 초기화하기 + LocalStorage데이터 삭제하기
     navigate('/'); //메인페이지로 복귀시키기
+  };
+
+  const handleAdminAccess = (e, path) => {
+    if (admin && path === '/') {
+      e.preventDefault(); 
+      showToast('관리자는 메인페이지로 이동할 수 없습니다.','error'); 
+      return;
+    }
   };
 
   const categories = [
@@ -45,6 +55,7 @@ function Header() {
         label="서비스 이름"
         path="/"
         className={Navstyle.NavButton}
+        onClick = {(e) => handleAdminAccess(e, '/')}
       />
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
@@ -55,6 +66,7 @@ function Header() {
                 label={item.label}
                 path={item.path}
                 className={Navstyle.NavButton}
+                onClick={(e) => handleAdminAccess(e, item.path)}
               />
             ))}
           </nav>

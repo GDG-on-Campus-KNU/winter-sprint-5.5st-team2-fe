@@ -12,6 +12,8 @@ import UserSingupPage from './pages/Auth/SingupPage/UserSingupPage';
 import AdminSingupPage from './pages/Auth/SingupPage/AdminSingupPage';
 import AdminMyPage from './pages/MyPage/AdminMyPage';
 import ProductManage from './pages/MyPage/ProductManage';
+import ProductForm from './pages/MyPage/ProductForm';
+import ProductEdit from './pages/MyPage/ProductEdit';
 
 export default function App() {
   return (
@@ -28,8 +30,18 @@ export default function App() {
             <Route path="/sing" element={<SingupPage />} />
             <Route path="/singup/personal" element={<UserSingupPage />} />
             <Route path="/singup/admin" element={<AdminSingupPage />} />
-            <Route path = "/mypage/admin" element = {<AdminMyPage/>}/>
-            <Route path = "/mypage/admin/product_manage" element = {<ProductManage/>}/>
+            <Route path="/mypage/admin" element={<AdminMyPage />} />
+            <Route 
+              path="/mypage/admin/product_manage"
+              element={<ProductManage />}
+            />
+            <Route 
+            path="/mypage/admin/product_form"
+            element = {<ProductForm/>}
+            />
+            <Route path="/mypage/admin/product_edit/:productId" 
+            element={<ProductEdit />} />
+          
           </Routes>
         </Layout>
       </BrowserRouter>

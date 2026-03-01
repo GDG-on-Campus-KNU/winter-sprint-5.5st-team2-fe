@@ -38,14 +38,14 @@ function LoginPage() {
       if (isAutoLogin) {
         localStorage.setItem('autoLoginUser', JSON.stringify(account));
       }
-      
+
       showToast(`${account.userName || '사용자'}님, 환영합니다!`, 'success');
 
       setTimeout(() => {
         if (foundAdmin) {
           adminLogin(MOCK_ADMIN_DATA);
-          console.log(MOCK_ADMIN_DATA)
-          navigate('/mypage/admin'); 
+          console.log(MOCK_ADMIN_DATA);
+          navigate('/mypage/admin');
           showToast('관리자님, 환영합니다!', 'success');
         } else {
           navigate('/');

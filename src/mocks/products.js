@@ -1,57 +1,55 @@
 export const MOCK_ADMIN_PRODUCTS = [
   {
     id: 1,
-    name: "상품명",
+    name: '상품명',
     originalPrice: 20000,
     discountPrice: 15000,
     deliveryFee: 3000,
     stock: 4,
-    imageUrl: "/src/assets/product_placeholder.png",
-    options: ["색상", "사이즈"]
+    imageUrl: '/src/assets/product_placeholder.png',
+    options: ['색상', '사이즈'],
   },
   {
     id: 2,
-    name: "상품명",
+    name: '상품명',
     originalPrice: 30000,
     discountPrice: 15000,
     deliveryFee: 3000,
     stock: 4,
-    imageUrl: "/src/assets/product_placeholder.png",
-    options: ["색상", "사이즈"]
+    imageUrl: '/src/assets/product_placeholder.png',
+    options: ['색상', '사이즈'],
   },
-  
+
   {
     id: 3,
-    name: "상품명",
+    name: '상품명',
     originalPrice: 40000,
     discountPrice: 15000,
     deliveryFee: 3000,
     stock: 4,
-    imageUrl: "/src/assets/product_placeholder.png",
-    options: ["색상", "사이즈"]
+    imageUrl: '/src/assets/product_placeholder.png',
+    options: ['색상', '사이즈'],
   },
-  
+
   {
     id: 4,
-    name: "상품명",
+    name: '상품명',
     originalPrice: 50000,
     discountPrice: 15000,
     deliveryFee: 3000,
     stock: 4,
-    imageUrl: "/src/assets/product_placeholder.png",
-    options: ["색상", "사이즈"]
+    imageUrl: '/src/assets/product_placeholder.png',
+    options: ['색상', '사이즈'],
   },
-  
+
   {
     id: 5,
-    name: "상품명",
+    name: '상품명',
     originalPrice: 20000,
     discountPrice: 15000,
     deliveryFee: 3000,
     stock: 4,
-    imageUrl: "/src/assets/product_placeholder.png",
-    options: ["색상", "사이즈"]
+    imageUrl: '/src/assets/product_placeholder.png',
+    options: ['색상', '사이즈'],
   },
-  
-  
 ];
