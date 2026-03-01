@@ -22,26 +22,24 @@ function Header() {
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    try {
+      if (!shouldUseMock) {
+        await logoutApi();
+      }
+    } catch (err) {
+      console.error('서버 로그아웃 실패(무시하고 진행):', err);
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('isLoggedIn');
 
- const handleLogout = async () => {
- 
-  try {
-    if (!shouldUseMock) {
-      await logoutApi();
+      if (typeof clearCart === 'function') clearCart();
+      if (typeof logout === 'function') logout();
+
+      navigate('/');
     }
-  } catch (err) {
-    console.error("서버 로그아웃 실패(무시하고 진행):", err);
-  } finally {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('isLoggedIn');
-
-    if (typeof clearCart === 'function') clearCart();
-    if (typeof logout === 'function') logout();
-
-    navigate('/');
-  }
-};
+  };
 
   const handleAdminAccess = (e, path) => {
     if (admin && path === '/') {
@@ -60,20 +58,23 @@ function Header() {
     { label: '악세사리', path: '/', key: '/accessories' },
   ];
 
-  const myPagePath = React.useMemo(() => 
-  admin ? '/mypage/admin' : '/mypage', 
-[admin]);
+  const myPagePath = React.useMemo(
+    () => (admin ? '/mypage/admin' : '/mypage'),
+    [admin],
+  );
 
-const iconButton = React.useMemo(() => [
-  { label: '마이페이지', path: myPagePath, key: '/my', icon: UserIcon },
-  {
-    label: cartCount > 0 ? `장바구니(${cartCount})` : '장바구니',
-    path: '/cart',
-    key: '/cart',
-    icon: ShoppingBagIcon,
-  },
-], [myPagePath, cartCount]);
-
+  const iconButton = React.useMemo(
+    () => [
+      { label: '마이페이지', path: myPagePath, key: '/my', icon: UserIcon },
+      {
+        label: cartCount > 0 ? `장바구니(${cartCount})` : '장바구니',
+        path: '/cart',
+        key: '/cart',
+        icon: ShoppingBagIcon,
+      },
+    ],
+    [myPagePath, cartCount],
+  );
 
   console.log(admin);
   return (

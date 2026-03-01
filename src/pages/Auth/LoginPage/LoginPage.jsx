@@ -28,7 +28,7 @@ function LoginPage() {
         const users = JSON.parse(localStorage.getItem('users') || '[]');
         const admins = JSON.parse(localStorage.getItem('admins') || '[]');
         const account = [...users, ...admins].find(
-          (item) => item.email === email && item.password === password
+          (item) => item.email === email && item.password === password,
         );
 
         if (!account) {
@@ -50,10 +50,9 @@ function LoginPage() {
       if (!loggedInUser) throw new Error('로그인 정보를 가져올 수 없습니다.');
 
       setAuth(loggedInUser);
-      
 
       if (loggedInUser.role === 'ADMIN') {
-        adminLogin(MOCK_ADMIN_DATA); 
+        adminLogin(MOCK_ADMIN_DATA);
       }
 
       showToast(`${loggedInUser.name || '사용자'}님, 환영합니다!`, 'success');
@@ -65,7 +64,6 @@ function LoginPage() {
           navigate('/');
         }
       }, 100);
-
     } catch (error) {
       console.error(error);
       showToast('이메일 또는 비밀번호를 확인해주세요', 'error');
