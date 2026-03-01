@@ -7,14 +7,29 @@ const useAuthStore = create(
     (set) => ({
       isLoggedIn: false,
       user: null,
-      setAuth: (userData) => set({ isLoggedIn: true, user: userData }),
+      admin: null, 
+
+      setAuth: (userData) => set({ 
+        isLoggedIn: true, 
+        user: userData,
+        admin: userData?.role === 'ADMIN' ? userData : null 
+      }),
+
+      adminLogin: (adminData) => set({ admin: adminData }),
+
       logout: () => {
-        clearTokens();
-        set({ isLoggedIn: false, user: null });
+        clearTokens(); 
+        set({ 
+          isLoggedIn: false, 
+          user: null, 
+          admin: null 
+        });
+        
+ 
       },
     }),
     {
-      name: 'auth-storage',
+      name: 'auth-storage', 
     },
   ),
 );

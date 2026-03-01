@@ -99,7 +99,7 @@ export default function MyPageAdmin() {
                 <div key={order.id} className={styles.orderItem}>
                   <div className={styles.orderMain}>
                     <span className={styles.date}>{order.date}</span>
-                    <p classNAme={styles.prodcutName}>{order.productName}</p>
+                    <p className={styles.prodcutName}>{order.productName}</p>
                   </div>
                   <span className={styles.buyer}>주문자 : {order.buyer}</span>
                 </div>

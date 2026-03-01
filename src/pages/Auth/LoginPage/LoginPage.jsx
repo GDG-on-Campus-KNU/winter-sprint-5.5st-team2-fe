@@ -22,52 +22,55 @@ function LoginPage() {
     e.preventDefault();
 
     try {
+      let loggedInUser = null;
+
       if (shouldUseMock) {
         const users = JSON.parse(localStorage.getItem('users') || '[]');
         const admins = JSON.parse(localStorage.getItem('admins') || '[]');
         const account = [...users, ...admins].find(
-          (item) => item.email === email && item.password === password,
+          (item) => item.email === email && item.password === password
         );
 
         if (!account) {
           throw new Error('Invalid credentials');
         }
 
-        const normalizedUser = {
+        loggedInUser = {
           id: account.id ?? Date.now(),
           role: account.role ?? 'USER',
           name: account.userName ?? account.name ?? account.store ?? '사용자',
           email: account.email,
         };
-        setAuth(normalizedUser);
-        showToast(`${normalizedUser.name}님, 환영합니다!`, 'success');
       } else {
         await loginApi({ email, password });
         const profile = await getMyProfile();
-        setAuth(profile ?? null);
-        showToast(
-          `${profile?.userName || profile?.name || '사용자'}님, 환영합니다!`,
-          'success',
-        );
+        loggedInUser = profile;
       }
 
-      showToast(`${account.userName || '사용자'}님, 환영합니다!`, 'success');
+      if (!loggedInUser) throw new Error('로그인 정보를 가져올 수 없습니다.');
+
+      setAuth(loggedInUser);
+      
+
+      if (loggedInUser.role === 'ADMIN') {
+        adminLogin(MOCK_ADMIN_DATA); 
+      }
+
+      showToast(`${loggedInUser.name || '사용자'}님, 환영합니다!`, 'success');
 
       setTimeout(() => {
-        if (foundAdmin) {
-          adminLogin(MOCK_ADMIN_DATA);
-          console.log(MOCK_ADMIN_DATA);
+        if (loggedInUser.role === 'ADMIN') {
           navigate('/mypage/admin');
-          showToast('관리자님, 환영합니다!', 'success');
         } else {
           navigate('/');
         }
       }, 100);
-    } catch {
+
+    } catch (error) {
+      console.error(error);
       showToast('이메일 또는 비밀번호를 확인해주세요', 'error');
     }
   };
-
   return (
     <div>
       <AuthLayout title="로그인">
