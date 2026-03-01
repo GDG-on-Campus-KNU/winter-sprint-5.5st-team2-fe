@@ -1,19 +1,56 @@
-import { getApiBaseUrl } from './client';
+import { apiRequest } from './client';
 
-export async function addToCart(payload) {
-  const requestUrl = `${getApiBaseUrl()}/api/cart`;
-  const response = await fetch(requestUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    throw new Error(`장바구니 추가 실패: ${response.status}`);
+const toCartPayload = (payload = {}) => {
+  if (payload.productId) {
+    return payload;
   }
 
-  const result = await response.json();
-  return result?.data ?? result;
+  if (payload.menuId) {
+    const { menuId, ...rest } = payload;
+    return {
+      ...rest,
+      productId: menuId,
+    };
+  }
+
+  return payload;
+};
+
+export async function getCart(signal) {
+  return apiRequest('/api/cart', {
+    method: 'GET',
+    signal,
+    auth: true,
+  });
+}
+
+export async function addToCart(payload) {
+  return apiRequest('/api/cart', {
+    method: 'POST',
+    body: toCartPayload(payload),
+    auth: true,
+  });
+}
+
+export async function updateCartItem(cartItemId, payload) {
+  return apiRequest(`/api/cart/${cartItemId}`, {
+    method: 'PATCH',
+    body: payload,
+    auth: true,
+  });
+}
+
+export async function deleteCartItem(cartItemId) {
+  return apiRequest(`/api/cart/${cartItemId}`, {
+    method: 'DELETE',
+    auth: true,
+  });
+}
+
+export async function deleteCartItems(cartItemIds = []) {
+  return apiRequest('/api/cart', {
+    method: 'DELETE',
+    body: { cartItemIds },
+    auth: true,
+  });
 }

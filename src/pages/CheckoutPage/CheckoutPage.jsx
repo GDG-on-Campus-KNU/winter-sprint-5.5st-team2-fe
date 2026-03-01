@@ -34,7 +34,7 @@ function CheckoutPage() {
   const subtotal = useMemo(
     () =>
       orderItems.reduce((sum, item) => {
-        const menu = mockMenus[String(item.menuId)];
+        const menu = mockMenus[String(item.productId)];
         if (!menu) {
           return sum;
         }

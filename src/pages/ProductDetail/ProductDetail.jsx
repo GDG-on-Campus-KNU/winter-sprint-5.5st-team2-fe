@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addToCart } from '../../api/cart';
 import { shouldUseMock } from '../../api/client';
-import { getMenuDetail } from '../../api/menus';
+import { getProductDetail } from '../../api/products';
 import { createOrder } from '../../api/orders';
 import ProductDetailImages from '../../components/product/ProductDetailImages';
 import ProductSummary from '../../components/product/ProductSummary';
@@ -20,6 +20,14 @@ const ProductDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  //api 연동 전 임시 로직
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  });
 
   //api 연동 전 임시 로직 추가
   useEffect(() => {
@@ -45,7 +53,14 @@ const ProductDetail = () => {
       try {
         setIsLoading(true);
         setError('');
-        const menu = await getMenuDetail(id, controller.signal);
+        const menu = await getProductDetail(id, controller.signal);
+        const resolvedSizes = Array.isArray(menu?.sizeOptions)
+          ? menu.sizeOptions
+          : Array.isArray(menu?.sizesOptions)
+            ? menu.sizesOptions
+            : Array.isArray(menu?.sizes)
+              ? menu.sizes
+              : [];
 
         setProduct({
           id: String(menu?.id ?? id),
@@ -55,7 +70,7 @@ const ProductDetail = () => {
           rating: Number(menu?.rating ?? 4.5),
           color: menu?.color ?? 'Black',
           colorHex: menu?.colorHex ?? '#111111',
-          sizes: menu?.sizes ?? ['S', 'M', 'L'],
+          sizes: resolvedSizes.map((size) => String(size)),
           originalPrice: Number(menu?.originalPrice ?? menu?.price ?? 0),
           discountRate: Number(menu?.discountRate ?? 0),
           imageUrl: menu?.imageUrl ?? menu?.image ?? fallbackImage,
@@ -102,10 +117,11 @@ const ProductDetail = () => {
       ? product.detailImages
       : [product.imageUrl];
 
-  const handleAddToCart = async ({ menuId, quantity, selectedSize }) => {
+  const handleAddToCart = async ({ productId, quantity, selectedSize }) => {
     const payload = {
-      menuId: Number(menuId),
+      productId: Number(productId),
       quantity,
+      selectedSize,
     };
 
     try {
@@ -131,12 +147,13 @@ const ProductDetail = () => {
     }
   };
 
-  const handleBuyNow = async ({ menuId, quantity }) => {
+  const handleBuyNow = async ({ productId, quantity, selectedSize }) => {
     const payload = {
       orderItems: [
         {
-          menuId: Number(menuId),
+          productId: Number(productId),
           quantity,
+          selectedSize,
         },
       ],
       couponId: null,
@@ -164,6 +181,9 @@ const ProductDetail = () => {
           onAddToCart={handleAddToCart}
           onBuyNow={handleBuyNow}
         />
+        {!isLoading && (
+          <ProductDetailImages images={detailImages} name={product.name} />
+        )}
         <ProductDetailImages images={detailImages} name={product.name} />
       </div>
     </section>
