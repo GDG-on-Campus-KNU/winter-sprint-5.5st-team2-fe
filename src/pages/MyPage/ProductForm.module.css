@@ -39,6 +39,11 @@
   width: 150px;
 }
 
+.imageLabel {
+  display: block;
+  width: 150px;
+}
+
 .imagePlaceholder {
   width: 150px;
   height: 150px;
@@ -86,12 +91,11 @@
   align-items: center;
 }
 
-
 .inputGroup input:focus {
-  outline: none; 
-  border-color: #54A7DA; 
-  background-color: #fffff; 
-  transition: all 0.2s ease; 
+  outline: none;
+  border-color: #54a7da;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
 }
 
 .withUnit span {
@@ -110,4 +114,8 @@
   float: right; /* 시안처럼 오른쪽 정렬 */
   margin-top: 10px;
   cursor: pointer;
+}
+
+.highlight {
+  color: #111;
 }

@@ -22,34 +22,33 @@ const useAuthStore = create(
     (set) => ({
       isLoggedIn: false,
       user: null,
+      admin: null,
       setAuth: (userData) =>
-        set((state) => ({
-          isLoggedIn: true,
-          user: normalizeUser(userData ?? {}, state.user ?? {}),
-        })),
-      admin: null, 
-
-      setAuth: (userData) => set({ 
-        isLoggedIn: true, 
-        user: userData,
-        admin: userData?.role === 'ADMIN' ? userData : null 
-      }),
+        set((state) => {
+          const normalizedUser = normalizeUser(
+            userData ?? {},
+            state.user ?? {},
+          );
+          return {
+            isLoggedIn: true,
+            user: normalizedUser,
+            admin: normalizedUser?.role === 'ADMIN' ? normalizedUser : null,
+          };
+        }),
 
       adminLogin: (adminData) => set({ admin: adminData }),
 
       logout: () => {
-        clearTokens(); 
-        set({ 
-          isLoggedIn: false, 
-          user: null, 
-          admin: null 
+        clearTokens();
+        set({
+          isLoggedIn: false,
+          user: null,
+          admin: null,
         });
-        
- 
       },
     }),
     {
-      name: 'auth-storage', 
+      name: 'auth-storage',
     },
   ),
 );

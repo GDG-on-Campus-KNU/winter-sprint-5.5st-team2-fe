@@ -6,10 +6,9 @@ import useCartStore from '../../../store/useCartStore';
 import AuthLayout from '../../../components/Auth/Authlayout';
 import style from './LoginPage.module.css';
 import { useToast } from '../../../context/ToastContext';
-import { login as loginApi } from '../../../api/auth';
+import { getMyProfile, login as loginApi } from '../../../api/auth';
 import { getCart } from '../../../api/cart';
 import { MOCK_ADMIN_DATA } from '../../../mocks/admin';
-import { getMyProfile, login as loginApi } from '../../../api/auth';
 import { shouldUseMock } from '../../../api/client';
 
 function LoginPage() {
@@ -32,7 +31,7 @@ function LoginPage() {
         const users = JSON.parse(localStorage.getItem('users') || '[]');
         const admins = JSON.parse(localStorage.getItem('admins') || '[]');
         const account = [...users, ...admins].find(
-          (item) => item.email === email && item.password === password
+          (item) => item.email === email && item.password === password,
         );
 
         if (!account) {
@@ -46,16 +45,13 @@ function LoginPage() {
           email: account.email,
         };
       } else {
-        const data = await loginApi({ email, password });
-        setAuth(data?.user ?? null);
+        await loginApi({ email, password });
         const serverCart = await getCart();
         const serverCartItems = Array.isArray(serverCart)
           ? serverCart
           : (serverCart?.cartItems ?? serverCart?.items ?? []);
         setCartItems(serverCartItems);
 
-        showToast(`${data?.user?.name || '사용자'}님, 환영합니다!`, 'success');
-        await loginApi({ email, password });
         const profile = await getMyProfile();
         loggedInUser = profile;
       }
@@ -63,10 +59,9 @@ function LoginPage() {
       if (!loggedInUser) throw new Error('로그인 정보를 가져올 수 없습니다.');
 
       setAuth(loggedInUser);
-      
 
       if (loggedInUser.role === 'ADMIN') {
-        adminLogin(MOCK_ADMIN_DATA); 
+        adminLogin(MOCK_ADMIN_DATA);
       }
 
       showToast(`${loggedInUser.name || '사용자'}님, 환영합니다!`, 'success');
@@ -78,7 +73,6 @@ function LoginPage() {
           navigate('/');
         }
       }, 100);
-
     } catch (error) {
       console.error(error);
       showToast('이메일 또는 비밀번호를 확인해주세요', 'error');
