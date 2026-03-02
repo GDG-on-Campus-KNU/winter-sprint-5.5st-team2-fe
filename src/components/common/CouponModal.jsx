@@ -1,11 +1,41 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './CouponModal.module.css';
 import CouponListItem from './CouponListItem';
 
 const FILTER_LABEL = {
-  AVAILABLE: '사용가능 쿠폰',
+  AVAILABLE: '사용 가능 쿠폰',
   USED: '사용한 쿠폰',
+};
+
+const getCouponId = (coupon) => coupon?.couponId ?? coupon?.id;
+
+const isUsedCoupon = (coupon) => {
+  const value =
+    coupon?.isUsed !== undefined && coupon?.isUsed !== null
+      ? coupon.isUsed
+      : coupon?.used;
+
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  if (typeof value === 'number') {
+    return value === 1;
+  }
+
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['true', '1', 'y', 'yes', 'used'].includes(normalized)) {
+      return true;
+    }
+    if (['false', '0', 'n', 'no', 'unused', 'available'].includes(normalized)) {
+      return false;
+    }
+  }
+
+  const status = String(coupon?.status ?? '').trim().toUpperCase();
+  return ['USED', 'EXPIRED', 'INACTIVE', 'DISABLED'].includes(status);
 };
 
 export default function CouponModal({
@@ -41,8 +71,8 @@ export default function CouponModal({
   }, [open, onClose]);
 
   const filteredCoupons = useMemo(() => {
-    if (filter === 'AVAILABLE') return coupons.filter((c) => !c.isUsed);
-    return coupons.filter((c) => c.isUsed);
+    if (filter === 'AVAILABLE') return coupons.filter((c) => !isUsedCoupon(c));
+    return coupons.filter((c) => isUsedCoupon(c));
   }, [coupons, filter]);
 
   if (!open) return null;
@@ -67,9 +97,7 @@ export default function CouponModal({
               aria-haspopup="listbox"
               aria-expanded={isMenuOpen}
             >
-              <span className={styles.dropdownText}>
-                {FILTER_LABEL[filter]}
-              </span>
+              <span className={styles.dropdownText}>{FILTER_LABEL[filter]}</span>
               <span className={styles.chevron}>
                 <svg
                   width="14"
@@ -96,7 +124,7 @@ export default function CouponModal({
                     setIsMenuOpen(false);
                   }}
                 >
-                  사용가능 쿠폰
+                  사용 가능 쿠폰
                 </button>
                 <button
                   type="button"
@@ -127,12 +155,12 @@ export default function CouponModal({
             <div className={styles.empty}>해당 쿠폰이 없습니다.</div>
           ) : (
             <ul className={styles.list}>
-              {filteredCoupons.map((c) => (
+              {filteredCoupons.map((c, index) => (
                 <CouponListItem
-                  key={c.id}
+                  key={`${String(getCouponId(c) ?? 'coupon')}-${index}`}
                   coupon={c}
-                  disabled={Boolean(c.isUsed)}
-                  isSelected={String(c.id) === String(selectedCouponId)}
+                  disabled={isUsedCoupon(c)}
+                  isSelected={String(getCouponId(c)) === String(selectedCouponId)}
                   selectable={selectable}
                   onSelect={() => onSelectCoupon?.(c)}
                 />
