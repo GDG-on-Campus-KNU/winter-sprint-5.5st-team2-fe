@@ -2,16 +2,19 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../../store/useAuthStore';
+import useCartStore from '../../../store/useCartStore';
 import AuthLayout from '../../../components/Auth/Authlayout';
 import style from './LoginPage.module.css';
 import { useToast } from '../../../context/ToastContext';
-import { getMyProfile, login as loginApi } from '../../../api/auth';
+import { login as loginApi } from '../../../api/auth';
+import { getCart } from '../../../api/cart';
 import { shouldUseMock } from '../../../api/client';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { setAuth } = useAuthStore();
+  const setCartItems = useCartStore((state) => state.setCartItems);
   const navigate = useNavigate();
 
   const showToast = useToast();
@@ -40,13 +43,15 @@ function LoginPage() {
         setAuth(normalizedUser);
         showToast(`${normalizedUser.name}님, 환영합니다!`, 'success');
       } else {
-        await loginApi({ email, password });
-        const profile = await getMyProfile();
-        setAuth(profile ?? null);
-        showToast(
-          `${profile?.userName || profile?.name || '사용자'}님, 환영합니다!`,
-          'success',
-        );
+        const data = await loginApi({ email, password });
+        setAuth(data?.user ?? null);
+        const serverCart = await getCart();
+        const serverCartItems = Array.isArray(serverCart)
+          ? serverCart
+          : (serverCart?.cartItems ?? serverCart?.items ?? []);
+        setCartItems(serverCartItems);
+
+        showToast(`${data?.user?.name || '사용자'}님, 환영합니다!`, 'success');
       }
 
       setTimeout(() => {
