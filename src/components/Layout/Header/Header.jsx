@@ -75,8 +75,6 @@ function Header() {
     ],
     [myPagePath, cartCount],
   );
-
-  console.log(admin);
   return (
     <header className={style.header}>
       <NavButton
