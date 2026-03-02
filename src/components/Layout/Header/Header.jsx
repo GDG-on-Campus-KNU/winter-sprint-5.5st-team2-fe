@@ -6,6 +6,7 @@ import IconButton from '../IconButton';
 import UserIcon from '../../../assets/User.png';
 import ShoppingBagIcon from '../../../assets/ShoppingBag.png';
 import Logout from '../../../assets/logout.png';
+import ServiceLogo from '../../../assets/Logo.svg';
 import { logout as logoutApi } from '../../../api/auth';
 import { shouldUseMock } from '../../../api/client';
 import Navstyle from '../NavButton.module.css';
@@ -79,9 +80,18 @@ function Header() {
     <header className={style.header}>
       <NavButton
         key="/main"
-        label="GoodStyle"
+        label={
+          <span className={style.serviceBrand}>
+            <img
+              src={ServiceLogo}
+              alt="GoodStyle 로고"
+              className={style.serviceLogo}
+            />
+            <span>GoodStyle</span>
+          </span>
+        }
         path="/"
-        className={Navstyle.NavButton}
+        className={`${Navstyle.NavButton} ${style.serviceName}`}
         onClick={(e) => handleAdminAccess(e, '/')}
       />
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>

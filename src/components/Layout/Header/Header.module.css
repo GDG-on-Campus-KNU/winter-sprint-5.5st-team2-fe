@@ -7,3 +7,28 @@
   background-color: #ffff;
   border-bottom: 1px solid #eee;
 }
+
+.serviceName {
+  display: inline-flex;
+  align-items: center;
+  color: var(--Primary-400, #1996d6);
+  font-feature-settings:
+    'liga' off,
+    'clig' off;
+  font-family: Paperlogy;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 120%;
+}
+
+.serviceBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.serviceLogo {
+  width: 25px;
+  height: 25px;
+}
