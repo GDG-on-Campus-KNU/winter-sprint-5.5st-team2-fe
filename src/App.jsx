@@ -5,6 +5,7 @@ import { ToastProvider } from './context/ToastContext';
 import HomePage from './pages/HomePage';
 import CartPage from './pages/CartPage/CartPage';
 import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
+import CheckoutSuccessPage from './pages/CheckoutSuccessPage/CheckoutSuccessPage';
 import ProductDetail from './pages/ProductDetail/ProductDetail';
 import LoginPage from './pages/Auth/LoginPage/LoginPage';
 import SingupPage from './pages/Auth/SingupPage/SingupPage';
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/singup" element={<SingupPage />} />
             <Route path="/singup/personal" element={<UserSingupPage />} />
