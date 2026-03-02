@@ -8,6 +8,8 @@ import style from './LoginPage.module.css';
 import { useToast } from '../../../context/ToastContext';
 import { login as loginApi } from '../../../api/auth';
 import { getCart } from '../../../api/cart';
+import { MOCK_ADMIN_DATA } from '../../../mocks/admin';
+import { getMyProfile, login as loginApi } from '../../../api/auth';
 import { shouldUseMock } from '../../../api/client';
 
 function LoginPage() {
@@ -18,30 +20,31 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const showToast = useToast();
+  const { adminLogin } = useAuthStore();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
+      let loggedInUser = null;
+
       if (shouldUseMock) {
         const users = JSON.parse(localStorage.getItem('users') || '[]');
         const admins = JSON.parse(localStorage.getItem('admins') || '[]');
         const account = [...users, ...admins].find(
-          (item) => item.email === email && item.password === password,
+          (item) => item.email === email && item.password === password
         );
 
         if (!account) {
           throw new Error('Invalid credentials');
         }
 
-        const normalizedUser = {
+        loggedInUser = {
           id: account.id ?? Date.now(),
           role: account.role ?? 'USER',
           name: account.userName ?? account.name ?? account.store ?? '사용자',
           email: account.email,
         };
-        setAuth(normalizedUser);
-        showToast(`${normalizedUser.name}님, 환영합니다!`, 'success');
       } else {
         const data = await loginApi({ email, password });
         setAuth(data?.user ?? null);
@@ -52,16 +55,35 @@ function LoginPage() {
         setCartItems(serverCartItems);
 
         showToast(`${data?.user?.name || '사용자'}님, 환영합니다!`, 'success');
+        await loginApi({ email, password });
+        const profile = await getMyProfile();
+        loggedInUser = profile;
       }
 
+      if (!loggedInUser) throw new Error('로그인 정보를 가져올 수 없습니다.');
+
+      setAuth(loggedInUser);
+      
+
+      if (loggedInUser.role === 'ADMIN') {
+        adminLogin(MOCK_ADMIN_DATA); 
+      }
+
+      showToast(`${loggedInUser.name || '사용자'}님, 환영합니다!`, 'success');
+
       setTimeout(() => {
-        navigate('/');
+        if (loggedInUser.role === 'ADMIN') {
+          navigate('/mypage/admin');
+        } else {
+          navigate('/');
+        }
       }, 100);
-    } catch {
+
+    } catch (error) {
+      console.error(error);
       showToast('이메일 또는 비밀번호를 확인해주세요', 'error');
     }
   };
-
   return (
     <div>
       <AuthLayout title="로그인">

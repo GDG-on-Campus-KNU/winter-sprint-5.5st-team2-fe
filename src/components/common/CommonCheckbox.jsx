@@ -13,6 +13,7 @@ function CommonCheckbox({
 
   useEffect(() => {
     if (inputRef.current) {
+      // 일부 선택 상태 제어
       inputRef.current.indeterminate = indeterminate && !checked;
     }
   }, [checked, indeterminate]);
@@ -24,14 +25,14 @@ function CommonCheckbox({
         id={id}
         type="checkbox"
         checked={checked}
-        className={styles.input}
+        className={styles.styledInput}
         onChange={(event) => onChange?.(event.target.checked)}
       />
-      {label ? (
-        <label htmlFor={id} className={styles.label}>
+      {label && (
+        <label htmlFor={id} className={styles.labelText}>
           {label}
         </label>
-      ) : null}
+      )}
     </div>
   );
 }

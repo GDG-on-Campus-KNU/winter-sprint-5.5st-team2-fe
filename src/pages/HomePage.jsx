@@ -6,19 +6,29 @@ import RecommendSection from '../components/Home/RecommendSection';
 import { shouldUseMock } from '../api/client';
 import { getProducts } from '../api/products';
 import { mockMenuList } from '../mocks/menus.mock';
+import useAuthStore from '../store/useAuthStore';
 
 const PAGE_SIZE = 8;
 
 export default function HomePage() {
   const navigate = useNavigate();
 
-  const [sort, setSort] = useState('Newest');
+  const { admin } = useAuthStore();
+  const [sort, setSort] = useState('recommend');
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState([]);
 
+  useEffect(() => {
+    if (admin) {
+      navigate('/mypage/admin', { replace: true });
+    }
+  }, [admin, navigate]);
+
   //api 연동 전 임시 로직
   useEffect(() => {
+    if (admin) return;
+
     if (shouldUseMock) {
       setProducts(mockMenuList);
       setIsLoading(false);
@@ -62,7 +72,7 @@ export default function HomePage() {
     }, 1500);
 
     return () => clearTimeout(timer);
-  }, [page, sort]);
+  }, [page, sort, admin]);
 
   const recommendProducts = useMemo(
     () =>
@@ -100,6 +110,8 @@ export default function HomePage() {
       setPage(totalPages);
     }
   }, [page, totalPages]);
+
+  if (admin) return null;
 
   return (
     <div>

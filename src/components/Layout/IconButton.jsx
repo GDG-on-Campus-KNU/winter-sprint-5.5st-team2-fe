@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 function IconButton({ label, path, Icon, className, onClick }) {
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    if (label === '로그아웃') {
-      if (onClick) onClick();
-    } else if (path) {
+  const handleClick = (e) => {
+    if (onClick) {
+      onClick(e);
+    }
+
+    if (!e.defaultPrevented && path) {
       navigate(path);
     }
   };
@@ -18,9 +20,9 @@ function IconButton({ label, path, Icon, className, onClick }) {
         <img
           src={Icon}
           alt={label}
-          sytle={{
+          style={{
             width: '24px',
-            hegiht: '24px',
+            height: '24px',
           }}
         />
       )}
