@@ -135,6 +135,7 @@ function CartPage() {
         quantity: item.quantity,
         selectedSize: item.selectedSize,
         unitPrice: Number(item.price ?? 0),
+        appliedCouponId: item.appliedCouponId,
       })),
       couponId: null,
     };

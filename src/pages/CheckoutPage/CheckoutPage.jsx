@@ -221,11 +221,15 @@ function CheckoutPage() {
 
     const normalizedOrderItems = orderItems
       .map((item) => ({
-        menuId: Number(item.menuId ?? item.productId),
+        productId: Number(item.productId ?? item.menuId),
         quantity: Math.max(1, Number(item.quantity) || 1),
         selectedSize: item.selectedSize,
+        unitPrice: Number(item.unitPrice ?? 0),
+        appliedCouponId: item.appliedCouponId
+          ? Number(item.appliedCouponId)
+          : null,
       }))
-      .filter((item) => Number.isFinite(item.menuId) && item.menuId > 0);
+      .filter((item) => Number.isFinite(item.productId) && item.productId > 0);
 
     if (normalizedOrderItems.length === 0) {
       showToast('주문할 상품 정보가 없습니다.', 'error');

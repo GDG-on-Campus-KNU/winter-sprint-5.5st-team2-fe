@@ -151,12 +151,17 @@ const ProductDetail = () => {
   };
 
   const handleBuyNow = ({ productId, quantity, selectedSize }) => {
+    const currentPrice =
+      product.originalPrice * (1 - product.discountRate / 100);
     const payload = {
       orderItems: [
         {
           menuId: Number(productId),
+          productId: Number(productId),
           quantity,
           selectedSize,
+          unitPrice: Math.floor(currentPrice),
+          appliedCouponId: null,
         },
       ],
       couponId: null,
