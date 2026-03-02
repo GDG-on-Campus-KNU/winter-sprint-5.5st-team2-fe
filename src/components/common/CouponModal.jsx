@@ -67,7 +67,9 @@ export default function CouponModal({
               aria-haspopup="listbox"
               aria-expanded={isMenuOpen}
             >
-              <span className={styles.dropdownText}>{FILTER_LABEL[filter]}</span>
+              <span className={styles.dropdownText}>
+                {FILTER_LABEL[filter]}
+              </span>
               <span className={styles.chevron}>
                 <svg
                   width="14"

@@ -91,18 +91,24 @@ function CartPage() {
           return sum;
         }
 
-        const discountType = String(appliedCoupon.discountType ?? '').toUpperCase();
+        const discountType = String(
+          appliedCoupon.discountType ?? '',
+        ).toUpperCase();
         const itemSubtotal = item.price * item.quantity;
 
         if (discountType === 'PERCENT') {
           return (
             sum +
-            Math.floor((itemSubtotal * Number(appliedCoupon.discountValue)) / 100)
+            Math.floor(
+              (itemSubtotal * Number(appliedCoupon.discountValue)) / 100,
+            )
           );
         }
 
         if (discountType === 'FIXED') {
-          return sum + Math.min(itemSubtotal, Number(appliedCoupon.discountValue));
+          return (
+            sum + Math.min(itemSubtotal, Number(appliedCoupon.discountValue))
+          );
         }
 
         return sum;
@@ -205,7 +211,9 @@ function CartPage() {
       (item) => String(item.cartItemId) === String(couponTargetCartItemId),
     );
 
-    return targetItem?.appliedCouponId ? String(targetItem.appliedCouponId) : null;
+    return targetItem?.appliedCouponId
+      ? String(targetItem.appliedCouponId)
+      : null;
   }, [cartItems, couponTargetCartItemId]);
 
   if (cartItems.length === 0) {

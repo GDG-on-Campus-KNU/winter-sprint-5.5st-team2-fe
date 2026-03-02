@@ -29,7 +29,9 @@ export default function CouponListItem({
   onSelect,
 }) {
   return (
-    <li className={`${styles.item} ${isSelected ? styles.selectedItem : ''}`.trim()}>
+    <li
+      className={`${styles.item} ${isSelected ? styles.selectedItem : ''}`.trim()}
+    >
       <div className={styles.topRow}>
         <div className={styles.name}>{coupon.couponName}</div>
         {selectable ? (
@@ -45,7 +47,9 @@ export default function CouponListItem({
       </div>
 
       <div className={styles.desc}>{getDiscountText(coupon)}</div>
-      <div className={styles.meta}>유효기간 {formatDate(coupon.expiryDate)}까지</div>
+      <div className={styles.meta}>
+        유효기간 {formatDate(coupon.expiryDate)}까지
+      </div>
     </li>
   );
 }
