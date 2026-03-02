@@ -50,6 +50,7 @@ export default function UserMyPage() {
         open={isCouponOpen}
         onClose={() => setIsCouponOpen(false)}
         coupons={MOCK_COUPON_RESPONSE.data}
+        selectable={false}
       />
     </div>
   );

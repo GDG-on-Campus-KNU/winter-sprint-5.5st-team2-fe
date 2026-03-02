@@ -77,6 +77,13 @@
   font-weight: 500;
 }
 
+.appliedCouponText {
+  margin: 8px 0 0;
+  color: #0f766e;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .buttonGroup {
   display: flex;
   gap: 12px; /* ← 여기서 간격 조절 */

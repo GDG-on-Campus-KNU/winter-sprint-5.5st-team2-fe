@@ -5,6 +5,7 @@ import CartSummaryCard from '../../components/Cart/CartSummaryCard';
 import CommonButton from '../../components/common/CommonButton';
 import CommonCheckbox from '../../components/common/CommonCheckbox';
 import useCartStore from '../../store/useCartStore';
+import { MOCK_COUPON_RESPONSE } from '../../mocks/coupons.mock';
 import styles from './CartPage.module.css';
 
 import CouponModal from '../../components/common/CouponModal';
@@ -23,6 +24,11 @@ function CartPage() {
   const applyCouponToItem = useCartStore((state) => state.applyCouponToItem);
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
   const [couponTargetCartItemId, setCouponTargetCartItemId] = useState(null);
+  const coupons = useMemo(() => MOCK_COUPON_RESPONSE.data ?? [], []);
+  const couponMap = useMemo(
+    () => new Map(coupons.map((coupon) => [String(coupon.id), coupon])),
+    [coupons],
+  );
 
   useEffect(() => {
     const allIds = cartItems.map((item) => item.cartItemId);
@@ -45,7 +51,11 @@ function CartPage() {
   const brandGroups = useMemo(() => {
     const map = cartItems.reduce((acc, item) => {
       const grouped = acc.get(item.brand) ?? [];
-      grouped.push(item);
+      grouped.push({
+        ...item,
+        appliedCouponName:
+          couponMap.get(String(item.appliedCouponId))?.couponName ?? '',
+      });
       acc.set(item.brand, grouped);
       return acc;
     }, new Map());
@@ -53,7 +63,7 @@ function CartPage() {
     return [...map.entries()]
       .sort(([a], [b]) => a.localeCompare(b, 'ko'))
       .map(([brand, items]) => ({ brand, items }));
-  }, [cartItems]);
+  }, [cartItems, couponMap]);
 
   const selectedItems = useMemo(
     () => cartItems.filter((item) => selectedItemIds.includes(item.cartItemId)),
@@ -73,8 +83,34 @@ function CartPage() {
       selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [selectedItems],
   );
+  const discountAmount = useMemo(
+    () =>
+      selectedItems.reduce((sum, item) => {
+        const appliedCoupon = couponMap.get(String(item.appliedCouponId));
+        if (!appliedCoupon || appliedCoupon.isUsed) {
+          return sum;
+        }
+
+        const discountType = String(appliedCoupon.discountType ?? '').toUpperCase();
+        const itemSubtotal = item.price * item.quantity;
+
+        if (discountType === 'PERCENT') {
+          return (
+            sum +
+            Math.floor((itemSubtotal * Number(appliedCoupon.discountValue)) / 100)
+          );
+        }
+
+        if (discountType === 'FIXED') {
+          return sum + Math.min(itemSubtotal, Number(appliedCoupon.discountValue));
+        }
+
+        return sum;
+      }, 0),
+    [couponMap, selectedItems],
+  );
   const shippingFee = selectedItems.length > 0 ? DEFAULT_SHIPPING_FEE : 0;
-  const total = subtotal + shippingFee;
+  const total = Math.max(0, subtotal - discountAmount + shippingFee);
 
   const handleRemoveItem = (targetCartItemId) => {
     removeItem(targetCartItemId);
@@ -155,9 +191,22 @@ function CartPage() {
 
   const handleSelectCoupon = (coupon) => {
     if (!couponTargetCartItemId) return;
+    if (coupon.isUsed) return;
     applyCouponToItem(couponTargetCartItemId, coupon.id);
     closeCouponModal();
   };
+
+  const selectedCouponIdForModal = useMemo(() => {
+    if (!couponTargetCartItemId) {
+      return null;
+    }
+
+    const targetItem = cartItems.find(
+      (item) => String(item.cartItemId) === String(couponTargetCartItemId),
+    );
+
+    return targetItem?.appliedCouponId ? String(targetItem.appliedCouponId) : null;
+  }, [cartItems, couponTargetCartItemId]);
 
   if (cartItems.length === 0) {
     return (
@@ -224,6 +273,7 @@ function CartPage() {
         <CartSummaryCard
           selectedItemCount={selectedItems.length}
           subtotal={subtotal}
+          discountAmount={discountAmount}
           shippingFee={shippingFee}
           total={total}
           onCheckout={handleCheckout}
@@ -234,7 +284,8 @@ function CartPage() {
       <CouponModal
         open={isCouponModalOpen}
         onClose={closeCouponModal}
-        coupons={[]}
+        coupons={coupons}
+        selectedCouponId={selectedCouponIdForModal}
         onSelectCoupon={handleSelectCoupon}
       />
     </section>

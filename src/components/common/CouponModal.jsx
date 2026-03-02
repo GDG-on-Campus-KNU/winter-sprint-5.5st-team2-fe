@@ -8,16 +8,21 @@ const FILTER_LABEL = {
   USED: '사용한 쿠폰',
 };
 
-export default function CouponModal({ open, onClose, coupons = [] }) {
-  const [filter, setFilter] = useState('AVAILABLE'); // AVAILABLE | USED
+export default function CouponModal({
+  open,
+  onClose,
+  coupons = [],
+  selectedCouponId = null,
+  onSelectCoupon,
+  selectable = true,
+}) {
+  const [filter, setFilter] = useState('AVAILABLE');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // 모달 열릴 때 메뉴 닫기
   useEffect(() => {
     if (open) setIsMenuOpen(false);
   }, [open]);
 
-  // 바디 스크롤 잠금 + ESC 닫기
   useEffect(() => {
     if (!open) return;
 
@@ -54,7 +59,6 @@ export default function CouponModal({ open, onClose, coupons = [] }) {
     >
       <div className={styles.modal} onClick={stop}>
         <header className={styles.header}>
-          {/* 타이틀 없이 드롭다운만 */}
           <div className={styles.dropdown}>
             <button
               type="button"
@@ -63,9 +67,7 @@ export default function CouponModal({ open, onClose, coupons = [] }) {
               aria-haspopup="listbox"
               aria-expanded={isMenuOpen}
             >
-              <span className={styles.dropdownText}>
-                {FILTER_LABEL[filter]}
-              </span>
+              <span className={styles.dropdownText}>{FILTER_LABEL[filter]}</span>
               <span className={styles.chevron}>
                 <svg
                   width="14"
@@ -114,7 +116,7 @@ export default function CouponModal({ open, onClose, coupons = [] }) {
             onClick={onClose}
             aria-label="닫기"
           >
-            ✕
+            ×
           </button>
         </header>
 
@@ -124,7 +126,14 @@ export default function CouponModal({ open, onClose, coupons = [] }) {
           ) : (
             <ul className={styles.list}>
               {filteredCoupons.map((c) => (
-                <CouponListItem key={c.id} coupon={c} />
+                <CouponListItem
+                  key={c.id}
+                  coupon={c}
+                  disabled={Boolean(c.isUsed)}
+                  isSelected={String(c.id) === String(selectedCouponId)}
+                  selectable={selectable}
+                  onSelect={() => onSelectCoupon?.(c)}
+                />
               ))}
             </ul>
           )}
