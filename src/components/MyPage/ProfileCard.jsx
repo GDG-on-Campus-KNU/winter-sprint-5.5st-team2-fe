@@ -11,7 +11,7 @@ export default function ProfileCard({ user, onCouponClick }) {
 
       <div className={styles.center}>
         <div className={styles.name}>
-          {user.userName ?? '사용자'}
+          {user.name ?? '사용자'}
           <span className={styles.suffix}>님</span>
         </div>
         <button
