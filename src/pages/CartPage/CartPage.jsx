@@ -5,12 +5,13 @@ import CartSummaryCard from '../../components/Cart/CartSummaryCard';
 import CommonButton from '../../components/common/CommonButton';
 import CommonCheckbox from '../../components/common/CommonCheckbox';
 import useCartStore from '../../store/useCartStore';
-import { MOCK_COUPON_RESPONSE } from '../../mocks/coupons.mock';
+import { getMyCoupons } from '../../api/coupons';
 import styles from './CartPage.module.css';
 
 import CouponModal from '../../components/common/CouponModal';
 
 const DEFAULT_SHIPPING_FEE = 3000;
+const getCouponId = (coupon) => coupon?.couponId ?? coupon?.id;
 
 function CartPage() {
   const navigate = useNavigate();
@@ -24,9 +25,30 @@ function CartPage() {
   const applyCouponToItem = useCartStore((state) => state.applyCouponToItem);
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
   const [couponTargetCartItemId, setCouponTargetCartItemId] = useState(null);
-  const coupons = useMemo(() => MOCK_COUPON_RESPONSE.data ?? [], []);
+  const [coupons, setCoupons] = useState([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchCoupons = async () => {
+      try {
+        const data = await getMyCoupons(controller.signal);
+        setCoupons(Array.isArray(data) ? data : []);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          setCoupons([]);
+        }
+      }
+    };
+
+    fetchCoupons();
+
+    return () => controller.abort();
+  }, []);
+
   const couponMap = useMemo(
-    () => new Map(coupons.map((coupon) => [String(coupon.id), coupon])),
+    () =>
+      new Map(coupons.map((coupon) => [String(getCouponId(coupon)), coupon])),
     [coupons],
   );
 
@@ -180,6 +202,12 @@ function CartPage() {
         appliedCouponId: item.appliedCouponId,
       })),
       couponId: null,
+      pricing: {
+        subtotal,
+        couponDiscount: discountAmount,
+        shippingFee,
+        total,
+      },
     };
 
     navigate('/checkout', { state: { payload } });
@@ -198,7 +226,7 @@ function CartPage() {
   const handleSelectCoupon = (coupon) => {
     if (!couponTargetCartItemId) return;
     if (coupon.isUsed) return;
-    applyCouponToItem(couponTargetCartItemId, coupon.id);
+    applyCouponToItem(couponTargetCartItemId, getCouponId(coupon));
     closeCouponModal();
   };
 

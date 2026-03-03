@@ -33,6 +33,7 @@ function CheckoutPage() {
   const user = useAuthStore((state) => state.user);
   const setAuth = useAuthStore((state) => state.setAuth);
   const orderItems = location.state?.payload?.orderItems ?? [];
+  const pricing = location.state?.payload?.pricing ?? {};
   const [currentOrderId, setCurrentOrderId] = useState(
     location.state?.orderId ?? null,
   );
@@ -170,13 +171,17 @@ function CheckoutPage() {
   const subtotal = orderDetail?.totalPrice
     ? Number(orderDetail.totalPrice)
     : calculatedSubtotal;
+  const couponDiscount = Number(
+    orderDetail?.discountAmount ?? pricing.couponDiscount ?? 0,
+  );
   const shippingFee = orderDetail?.totalPrice
     ? 0
-    : subtotal > 0
-      ? DEFAULT_SHIPPING_FEE
-      : 0;
-  const couponDiscount = 0;
-  const total = subtotal - couponDiscount + shippingFee;
+    : Number.isFinite(Number(pricing.shippingFee))
+      ? Number(pricing.shippingFee)
+      : subtotal > 0
+        ? DEFAULT_SHIPPING_FEE
+        : 0;
+  const total = Math.max(0, subtotal - couponDiscount + shippingFee);
 
   const handleInputChange = (key) => (event) => {
     setFormValues((prev) => ({ ...prev, [key]: event.target.value }));

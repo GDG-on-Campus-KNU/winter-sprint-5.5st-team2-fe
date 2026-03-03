@@ -20,7 +20,7 @@ const normalizeUser = (userData = {}, prevUser = {}) => {
 const useAuthStore = create(
   persist(
     (set) => ({
-      isLoggedIn: false,
+      isLoggedIn: true,
       user: null,
       admin: null,
       setAuth: (userData) =>

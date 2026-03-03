@@ -34,7 +34,9 @@ const isUsedCoupon = (coupon) => {
     }
   }
 
-  const status = String(coupon?.status ?? '').trim().toUpperCase();
+  const status = String(coupon?.status ?? '')
+    .trim()
+    .toUpperCase();
   return ['USED', 'EXPIRED', 'INACTIVE', 'DISABLED'].includes(status);
 };
 
@@ -97,7 +99,9 @@ export default function CouponModal({
               aria-haspopup="listbox"
               aria-expanded={isMenuOpen}
             >
-              <span className={styles.dropdownText}>{FILTER_LABEL[filter]}</span>
+              <span className={styles.dropdownText}>
+                {FILTER_LABEL[filter]}
+              </span>
               <span className={styles.chevron}>
                 <svg
                   width="14"
@@ -160,7 +164,9 @@ export default function CouponModal({
                   key={`${String(getCouponId(c) ?? 'coupon')}-${index}`}
                   coupon={c}
                   disabled={isUsedCoupon(c)}
-                  isSelected={String(getCouponId(c)) === String(selectedCouponId)}
+                  isSelected={
+                    String(getCouponId(c)) === String(selectedCouponId)
+                  }
                   selectable={selectable}
                   onSelect={() => onSelectCoupon?.(c)}
                 />
