@@ -4,6 +4,8 @@ import CartItemCard from '../../components/Cart/CartItemCard';
 import CartSummaryCard from '../../components/Cart/CartSummaryCard';
 import CommonButton from '../../components/common/CommonButton';
 import CommonCheckbox from '../../components/common/CommonCheckbox';
+import { deleteCartItem } from '../../api/cart';
+import { getAccessToken, shouldUseMock } from '../../api/client';
 import useCartStore from '../../store/useCartStore';
 import { getMyCoupons } from '../../api/coupons';
 import styles from './CartPage.module.css';
@@ -12,6 +14,8 @@ import CouponModal from '../../components/common/CouponModal';
 
 const DEFAULT_SHIPPING_FEE = 3000;
 const getCouponId = (coupon) => coupon?.couponId ?? coupon?.id;
+const isServerCartItemId = (cartItemId) =>
+  Number.isFinite(Number(cartItemId)) && Number(cartItemId) > 0;
 
 function CartPage() {
   const navigate = useNavigate();
@@ -140,7 +144,20 @@ function CartPage() {
   const shippingFee = selectedItems.length > 0 ? DEFAULT_SHIPPING_FEE : 0;
   const total = Math.max(0, subtotal - discountAmount + shippingFee);
 
-  const handleRemoveItem = (targetCartItemId) => {
+  const handleRemoveItem = async (targetCartItemId) => {
+    if (
+      !shouldUseMock &&
+      getAccessToken() &&
+      isServerCartItemId(targetCartItemId)
+    ) {
+      try {
+        await deleteCartItem(targetCartItemId);
+      } catch (error) {
+        console.error('장바구니 삭제 API 실패:', error);
+        return;
+      }
+    }
+
     removeItem(targetCartItemId);
     setSelectedItemIds((prev) => prev.filter((id) => id !== targetCartItemId));
   };
@@ -194,6 +211,7 @@ function CartPage() {
 
     const payload = {
       orderItems: selectedItems.map((item) => ({
+        cartItemId: item.cartItemId,
         productId: Number(item.productId),
         menuId: Number(item.productId),
         quantity: item.quantity,

@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getMyProfile } from '../../api/auth';
-import { shouldUseMock } from '../../api/client';
+import { getAccessToken, shouldUseMock } from '../../api/client';
+import { deleteCartItems } from '../../api/cart';
 import { createOrder, getOrder } from '../../api/orders';
 import CartSummaryCard from '../../components/Cart/CartSummaryCard';
 import CommonButton from '../../components/common/CommonButton';
@@ -9,6 +10,7 @@ import CommonInput from '../../components/common/CommonInput';
 import { useToast } from '../../context/ToastContext';
 import { mockMenus } from '../../mocks/menus.mock';
 import useAuthStore from '../../store/useAuthStore';
+import useCartStore from '../../store/useCartStore';
 import styles from './CheckoutPage.module.css';
 
 const DEFAULT_SHIPPING_FEE = 3000;
@@ -32,6 +34,7 @@ function CheckoutPage() {
   const showToast = useToast();
   const user = useAuthStore((state) => state.user);
   const setAuth = useAuthStore((state) => state.setAuth);
+  const removeCartItem = useCartStore((state) => state.removeItem);
   const orderItems = location.state?.payload?.orderItems ?? [];
   const pricing = location.state?.payload?.pricing ?? {};
   const [currentOrderId, setCurrentOrderId] = useState(
@@ -260,6 +263,24 @@ function CheckoutPage() {
       if (!resolvedOrderId) {
         throw new Error('orderId missing');
       }
+
+      const serverCartItemIds = orderItems
+        .map((item) => Number(item?.cartItemId))
+        .filter((cartItemId) => Number.isFinite(cartItemId) && cartItemId > 0);
+
+      if (!shouldUseMock && getAccessToken() && serverCartItemIds.length > 0) {
+        try {
+          await deleteCartItems(serverCartItemIds);
+        } catch (error) {
+          console.error('장바구니 일괄 삭제 API 실패:', error);
+        }
+      }
+
+      orderItems.forEach((item) => {
+        if (item?.cartItemId !== undefined && item?.cartItemId !== null) {
+          removeCartItem(item.cartItemId);
+        }
+      });
 
       setCurrentOrderId(String(resolvedOrderId));
       navigate('/checkout/success');
