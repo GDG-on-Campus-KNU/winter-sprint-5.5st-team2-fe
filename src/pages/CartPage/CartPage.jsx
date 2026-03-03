@@ -5,11 +5,13 @@ import CartSummaryCard from '../../components/Cart/CartSummaryCard';
 import CommonButton from '../../components/common/CommonButton';
 import CommonCheckbox from '../../components/common/CommonCheckbox';
 import useCartStore from '../../store/useCartStore';
+import { getMyCoupons } from '../../api/coupons';
 import styles from './CartPage.module.css';
 
 import CouponModal from '../../components/common/CouponModal';
 
 const DEFAULT_SHIPPING_FEE = 3000;
+const getCouponId = (coupon) => coupon?.couponId ?? coupon?.id;
 
 function CartPage() {
   const navigate = useNavigate();
@@ -23,6 +25,32 @@ function CartPage() {
   const applyCouponToItem = useCartStore((state) => state.applyCouponToItem);
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
   const [couponTargetCartItemId, setCouponTargetCartItemId] = useState(null);
+  const [coupons, setCoupons] = useState([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchCoupons = async () => {
+      try {
+        const data = await getMyCoupons(controller.signal);
+        setCoupons(Array.isArray(data) ? data : []);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          setCoupons([]);
+        }
+      }
+    };
+
+    fetchCoupons();
+
+    return () => controller.abort();
+  }, []);
+
+  const couponMap = useMemo(
+    () =>
+      new Map(coupons.map((coupon) => [String(getCouponId(coupon)), coupon])),
+    [coupons],
+  );
 
   useEffect(() => {
     const allIds = cartItems.map((item) => item.cartItemId);
@@ -45,7 +73,11 @@ function CartPage() {
   const brandGroups = useMemo(() => {
     const map = cartItems.reduce((acc, item) => {
       const grouped = acc.get(item.brand) ?? [];
-      grouped.push(item);
+      grouped.push({
+        ...item,
+        appliedCouponName:
+          couponMap.get(String(item.appliedCouponId))?.couponName ?? '',
+      });
       acc.set(item.brand, grouped);
       return acc;
     }, new Map());
@@ -53,7 +85,7 @@ function CartPage() {
     return [...map.entries()]
       .sort(([a], [b]) => a.localeCompare(b, 'ko'))
       .map(([brand, items]) => ({ brand, items }));
-  }, [cartItems]);
+  }, [cartItems, couponMap]);
 
   const selectedItems = useMemo(
     () => cartItems.filter((item) => selectedItemIds.includes(item.cartItemId)),
@@ -73,8 +105,40 @@ function CartPage() {
       selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [selectedItems],
   );
+  const discountAmount = useMemo(
+    () =>
+      selectedItems.reduce((sum, item) => {
+        const appliedCoupon = couponMap.get(String(item.appliedCouponId));
+        if (!appliedCoupon || appliedCoupon.isUsed) {
+          return sum;
+        }
+
+        const discountType = String(
+          appliedCoupon.discountType ?? '',
+        ).toUpperCase();
+        const itemSubtotal = item.price * item.quantity;
+
+        if (discountType === 'PERCENT') {
+          return (
+            sum +
+            Math.floor(
+              (itemSubtotal * Number(appliedCoupon.discountValue)) / 100,
+            )
+          );
+        }
+
+        if (discountType === 'FIXED') {
+          return (
+            sum + Math.min(itemSubtotal, Number(appliedCoupon.discountValue))
+          );
+        }
+
+        return sum;
+      }, 0),
+    [couponMap, selectedItems],
+  );
   const shippingFee = selectedItems.length > 0 ? DEFAULT_SHIPPING_FEE : 0;
-  const total = subtotal + shippingFee;
+  const total = Math.max(0, subtotal - discountAmount + shippingFee);
 
   const handleRemoveItem = (targetCartItemId) => {
     removeItem(targetCartItemId);
@@ -138,6 +202,12 @@ function CartPage() {
         appliedCouponId: item.appliedCouponId,
       })),
       couponId: null,
+      pricing: {
+        subtotal,
+        couponDiscount: discountAmount,
+        shippingFee,
+        total,
+      },
     };
 
     navigate('/checkout', { state: { payload } });
@@ -155,9 +225,24 @@ function CartPage() {
 
   const handleSelectCoupon = (coupon) => {
     if (!couponTargetCartItemId) return;
-    applyCouponToItem(couponTargetCartItemId, coupon.id);
+    if (coupon.isUsed) return;
+    applyCouponToItem(couponTargetCartItemId, getCouponId(coupon));
     closeCouponModal();
   };
+
+  const selectedCouponIdForModal = useMemo(() => {
+    if (!couponTargetCartItemId) {
+      return null;
+    }
+
+    const targetItem = cartItems.find(
+      (item) => String(item.cartItemId) === String(couponTargetCartItemId),
+    );
+
+    return targetItem?.appliedCouponId
+      ? String(targetItem.appliedCouponId)
+      : null;
+  }, [cartItems, couponTargetCartItemId]);
 
   if (cartItems.length === 0) {
     return (
@@ -224,6 +309,7 @@ function CartPage() {
         <CartSummaryCard
           selectedItemCount={selectedItems.length}
           subtotal={subtotal}
+          discountAmount={discountAmount}
           shippingFee={shippingFee}
           total={total}
           onCheckout={handleCheckout}
@@ -234,7 +320,8 @@ function CartPage() {
       <CouponModal
         open={isCouponModalOpen}
         onClose={closeCouponModal}
-        coupons={[]}
+        coupons={coupons}
+        selectedCouponId={selectedCouponIdForModal}
         onSelectCoupon={handleSelectCoupon}
       />
     </section>

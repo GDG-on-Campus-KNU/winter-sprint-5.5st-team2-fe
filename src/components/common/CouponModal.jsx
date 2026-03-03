@@ -1,23 +1,60 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './CouponModal.module.css';
 import CouponListItem from './CouponListItem';
 
 const FILTER_LABEL = {
-  AVAILABLE: '사용가능 쿠폰',
+  AVAILABLE: '사용 가능 쿠폰',
   USED: '사용한 쿠폰',
 };
 
-export default function CouponModal({ open, onClose, coupons = [] }) {
-  const [filter, setFilter] = useState('AVAILABLE'); // AVAILABLE | USED
+const getCouponId = (coupon) => coupon?.couponId ?? coupon?.id;
+
+const isUsedCoupon = (coupon) => {
+  const value =
+    coupon?.isUsed !== undefined && coupon?.isUsed !== null
+      ? coupon.isUsed
+      : coupon?.used;
+
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  if (typeof value === 'number') {
+    return value === 1;
+  }
+
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['true', '1', 'y', 'yes', 'used'].includes(normalized)) {
+      return true;
+    }
+    if (['false', '0', 'n', 'no', 'unused', 'available'].includes(normalized)) {
+      return false;
+    }
+  }
+
+  const status = String(coupon?.status ?? '')
+    .trim()
+    .toUpperCase();
+  return ['USED', 'EXPIRED', 'INACTIVE', 'DISABLED'].includes(status);
+};
+
+export default function CouponModal({
+  open,
+  onClose,
+  coupons = [],
+  selectedCouponId = null,
+  onSelectCoupon,
+  selectable = true,
+}) {
+  const [filter, setFilter] = useState('AVAILABLE');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // 모달 열릴 때 메뉴 닫기
   useEffect(() => {
     if (open) setIsMenuOpen(false);
   }, [open]);
 
-  // 바디 스크롤 잠금 + ESC 닫기
   useEffect(() => {
     if (!open) return;
 
@@ -36,8 +73,8 @@ export default function CouponModal({ open, onClose, coupons = [] }) {
   }, [open, onClose]);
 
   const filteredCoupons = useMemo(() => {
-    if (filter === 'AVAILABLE') return coupons.filter((c) => !c.isUsed);
-    return coupons.filter((c) => c.isUsed);
+    if (filter === 'AVAILABLE') return coupons.filter((c) => !isUsedCoupon(c));
+    return coupons.filter((c) => isUsedCoupon(c));
   }, [coupons, filter]);
 
   if (!open) return null;
@@ -54,7 +91,6 @@ export default function CouponModal({ open, onClose, coupons = [] }) {
     >
       <div className={styles.modal} onClick={stop}>
         <header className={styles.header}>
-          {/* 타이틀 없이 드롭다운만 */}
           <div className={styles.dropdown}>
             <button
               type="button"
@@ -92,7 +128,7 @@ export default function CouponModal({ open, onClose, coupons = [] }) {
                     setIsMenuOpen(false);
                   }}
                 >
-                  사용가능 쿠폰
+                  사용 가능 쿠폰
                 </button>
                 <button
                   type="button"
@@ -114,7 +150,7 @@ export default function CouponModal({ open, onClose, coupons = [] }) {
             onClick={onClose}
             aria-label="닫기"
           >
-            ✕
+            ×
           </button>
         </header>
 
@@ -123,8 +159,17 @@ export default function CouponModal({ open, onClose, coupons = [] }) {
             <div className={styles.empty}>해당 쿠폰이 없습니다.</div>
           ) : (
             <ul className={styles.list}>
-              {filteredCoupons.map((c) => (
-                <CouponListItem key={c.id} coupon={c} />
+              {filteredCoupons.map((c, index) => (
+                <CouponListItem
+                  key={`${String(getCouponId(c) ?? 'coupon')}-${index}`}
+                  coupon={c}
+                  disabled={isUsedCoupon(c)}
+                  isSelected={
+                    String(getCouponId(c)) === String(selectedCouponId)
+                  }
+                  selectable={selectable}
+                  onSelect={() => onSelectCoupon?.(c)}
+                />
               ))}
             </ul>
           )}

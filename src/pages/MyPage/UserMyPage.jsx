@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getMyCoupons } from '../../api/coupons';
 import { MOCK_DELIVERY } from '../../mocks/myPage.mock';
-import { MOCK_COUPON_RESPONSE } from '../../mocks/coupons.mock';
 
 import styles from './UserMyPage.module.css';
 import ProfileCard from '../../components/MyPage/ProfileCard';
@@ -20,6 +20,26 @@ export default function UserMyPage() {
   });
 
   const [isCouponOpen, setIsCouponOpen] = useState(false);
+  const [coupons, setCoupons] = useState([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchCoupons = async () => {
+      try {
+        const data = await getMyCoupons(controller.signal);
+        setCoupons(Array.isArray(data) ? data : []);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          setCoupons([]);
+        }
+      }
+    };
+
+    fetchCoupons();
+
+    return () => controller.abort();
+  }, []);
 
   if (!isAllowed) return null;
 
@@ -49,7 +69,8 @@ export default function UserMyPage() {
       <CouponModal
         open={isCouponOpen}
         onClose={() => setIsCouponOpen(false)}
-        coupons={MOCK_COUPON_RESPONSE.data}
+        coupons={coupons}
+        selectable={false}
       />
     </div>
   );
