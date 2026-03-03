@@ -4,14 +4,34 @@ import { persist } from 'zustand/middleware';
 const getProductId = (product) =>
   String(product?.productId ?? product?.id ?? product?.menuId ?? '');
 
-const getCartItemId = (product, fallbackCartItemId) => {
-  const value = fallbackCartItemId ?? product?.cartItemId;
+const toNumberId = (value) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+};
 
+const normalizeCartItemId = (value, fallback = null) => {
   if (value === undefined || value === null || value === '') {
-    return null;
+    return fallback;
   }
 
-  return String(value);
+  const numberId = toNumberId(value);
+  return numberId ?? String(value);
+};
+
+const isSameCartItemId = (left, right) => {
+  const leftNumberId = toNumberId(left);
+  const rightNumberId = toNumberId(right);
+
+  if (leftNumberId !== null && rightNumberId !== null) {
+    return leftNumberId === rightNumberId;
+  }
+
+  return String(left) === String(right);
+};
+
+const getCartItemId = (product, fallbackCartItemId) => {
+  const value = fallbackCartItemId ?? product?.cartItemId;
+  return normalizeCartItemId(value);
 };
 
 const normalizeCartItem = (product, quantity = 1, selectedSize, cartItemId) => {
@@ -48,6 +68,16 @@ const makeLocalCartItemId = (sequence) => `local-${sequence}`;
 
 const migrateCartItems = (items = []) =>
   items.map((item, index) => {
+    if (
+      item?.cartItemId === undefined ||
+      item?.cartItemId === null ||
+      item?.cartItemId === ''
+    ) {
+      throw new Error(
+        `Invalid cart item at index ${index}: cartItemId is required.`,
+      );
+    }
+
     const productId = String(item?.productId ?? item?.id ?? item?.menuId ?? '');
     const fallbackSize =
       item?.selectedSize ??
@@ -57,7 +87,7 @@ const migrateCartItems = (items = []) =>
 
     return {
       ...item,
-      cartItemId: String(item?.cartItemId ?? `legacy-${index + 1}`),
+      cartItemId: normalizeCartItemId(item?.cartItemId),
       productId,
       selectedSize: fallbackSize,
       sizeOptions:
@@ -123,22 +153,22 @@ const useCartStore = create(
       removeItem: (targetCartItemId) =>
         set((state) => ({
           cartItems: state.cartItems.filter(
-            (item) => item.cartItemId !== String(targetCartItemId),
+            (item) => !isSameCartItemId(item.cartItemId, targetCartItemId),
           ),
         })),
       updateItemQuantity: (targetCartItemId, delta) =>
         set((state) => ({
           cartItems: state.cartItems.map((item) =>
-            item.cartItemId === String(targetCartItemId)
+            isSameCartItemId(item.cartItemId, targetCartItemId)
               ? { ...item, quantity: Math.max(1, item.quantity + delta) }
               : item,
           ),
         })),
       updateItemSize: (targetCartItemId, selectedSize) =>
         set((state) => {
-          const normalizedCartItemId = String(targetCartItemId);
-          const targetItem = state.cartItems.find(
-            (item) => item.cartItemId === normalizedCartItemId,
+          const normalizedCartItemId = normalizeCartItemId(targetCartItemId);
+          const targetItem = state.cartItems.find((item) =>
+            isSameCartItemId(item.cartItemId, normalizedCartItemId),
           );
 
           if (!targetItem || targetItem.selectedSize === selectedSize) {
@@ -147,7 +177,7 @@ const useCartStore = create(
 
           const duplicateItem = state.cartItems.find(
             (item) =>
-              item.cartItemId !== normalizedCartItemId &&
+              !isSameCartItemId(item.cartItemId, normalizedCartItemId) &&
               item.productId === targetItem.productId &&
               item.selectedSize === selectedSize,
           );
@@ -155,7 +185,7 @@ const useCartStore = create(
           if (!duplicateItem) {
             return {
               cartItems: state.cartItems.map((item) =>
-                item.cartItemId === normalizedCartItemId
+                isSameCartItemId(item.cartItemId, normalizedCartItemId)
                   ? { ...item, selectedSize }
                   : item,
               ),
@@ -164,9 +194,12 @@ const useCartStore = create(
 
           return {
             cartItems: state.cartItems
-              .filter((item) => item.cartItemId !== normalizedCartItemId)
+              .filter(
+                (item) =>
+                  !isSameCartItemId(item.cartItemId, normalizedCartItemId),
+              )
               .map((item) =>
-                item.cartItemId === duplicateItem.cartItemId
+                isSameCartItemId(item.cartItemId, duplicateItem.cartItemId)
                   ? { ...item, quantity: item.quantity + targetItem.quantity }
                   : item,
               ),
@@ -175,7 +208,7 @@ const useCartStore = create(
       applyCouponToItem: (targetCartItemId, couponId) =>
         set((state) => ({
           cartItems: state.cartItems.map((item) =>
-            item.cartItemId === String(targetCartItemId)
+            isSameCartItemId(item.cartItemId, targetCartItemId)
               ? { ...item, appliedCouponId: couponId ? String(couponId) : null }
               : item,
           ),
@@ -184,10 +217,16 @@ const useCartStore = create(
       removeCouponFromItem: (targetCartItemId) =>
         set((state) => ({
           cartItems: state.cartItems.map((item) =>
-            item.cartItemId === String(targetCartItemId)
+            isSameCartItemId(item.cartItemId, targetCartItemId)
               ? { ...item, appliedCouponId: null }
               : item,
           ),
+        })),
+
+      setCartItems: (items = []) =>
+        set(() => ({
+          cartItems: Array.isArray(items) ? migrateCartItems(items) : [],
+          nextLocalCartItemId: 1,
         })),
 
       clearCart: () => set({ cartItems: [], nextLocalCartItemId: 1 }),

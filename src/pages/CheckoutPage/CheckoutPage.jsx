@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getMyProfile } from '../../api/auth';
 import { shouldUseMock } from '../../api/client';
 import { createOrder, getOrder } from '../../api/orders';
@@ -28,10 +28,12 @@ const DAUM_POSTCODE_SCRIPT_URL =
 
 function CheckoutPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const showToast = useToast();
   const user = useAuthStore((state) => state.user);
   const setAuth = useAuthStore((state) => state.setAuth);
   const orderItems = location.state?.payload?.orderItems ?? [];
+  const pricing = location.state?.payload?.pricing ?? {};
   const [currentOrderId, setCurrentOrderId] = useState(
     location.state?.orderId ?? null,
   );
@@ -169,13 +171,17 @@ function CheckoutPage() {
   const subtotal = orderDetail?.totalPrice
     ? Number(orderDetail.totalPrice)
     : calculatedSubtotal;
+  const couponDiscount = Number(
+    orderDetail?.discountAmount ?? pricing.couponDiscount ?? 0,
+  );
   const shippingFee = orderDetail?.totalPrice
     ? 0
-    : subtotal > 0
-      ? DEFAULT_SHIPPING_FEE
-      : 0;
-  const couponDiscount = 0;
-  const total = subtotal - couponDiscount + shippingFee;
+    : Number.isFinite(Number(pricing.shippingFee))
+      ? Number(pricing.shippingFee)
+      : subtotal > 0
+        ? DEFAULT_SHIPPING_FEE
+        : 0;
+  const total = Math.max(0, subtotal - couponDiscount + shippingFee);
 
   const handleInputChange = (key) => (event) => {
     setFormValues((prev) => ({ ...prev, [key]: event.target.value }));
@@ -221,11 +227,15 @@ function CheckoutPage() {
 
     const normalizedOrderItems = orderItems
       .map((item) => ({
-        menuId: Number(item.menuId ?? item.productId),
+        productId: Number(item.productId ?? item.menuId),
         quantity: Math.max(1, Number(item.quantity) || 1),
         selectedSize: item.selectedSize,
+        unitPrice: Number(item.unitPrice ?? 0),
+        appliedCouponId: item.appliedCouponId
+          ? Number(item.appliedCouponId)
+          : null,
       }))
-      .filter((item) => Number.isFinite(item.menuId) && item.menuId > 0);
+      .filter((item) => Number.isFinite(item.productId) && item.productId > 0);
 
     if (normalizedOrderItems.length === 0) {
       showToast('주문할 상품 정보가 없습니다.', 'error');
@@ -252,7 +262,7 @@ function CheckoutPage() {
       }
 
       setCurrentOrderId(String(resolvedOrderId));
-      showToast('주문이 완료되었습니다.', 'success');
+      navigate('/checkout/success');
     } catch {
       setOrderError('결제 처리에 실패했습니다.');
       showToast('결제 처리에 실패했습니다.', 'error');

@@ -3,7 +3,7 @@ export const MOCK_COUPON_RESPONSE = {
   success: true,
   data: [
     {
-      id: 1,
+      couponId: 1,
       couponName: '설날 기념 10% 할인',
       discountType: 'PERCENT', // PERCENT | FIXED
       discountValue: 10,
@@ -11,7 +11,7 @@ export const MOCK_COUPON_RESPONSE = {
       expiryDate: '2026-12-31T23:59:59.000Z',
     },
     {
-      id: 2,
+      couponId: 2,
       couponName: '신규회원 3,000원 할인',
       discountType: 'FIXED',
       discountValue: 3000,
@@ -19,7 +19,7 @@ export const MOCK_COUPON_RESPONSE = {
       expiryDate: '2026-06-30T23:59:59.000Z',
     },
     {
-      id: 3,
+      couponId: 3,
       couponName: '배송비 지원 쿠폰',
       discountType: 'FIXED',
       discountValue: 2500,
@@ -31,7 +31,7 @@ export const MOCK_COUPON_RESPONSE = {
     ...Array.from({ length: 15 }).map((_, idx) => {
       const n = idx + 4;
       return {
-        id: n,
+        couponId: n,
         couponName: `테스트 쿠폰 ${n}`,
         discountType: idx % 2 === 0 ? 'PERCENT' : 'FIXED',
         discountValue: idx % 2 === 0 ? 5 + (idx % 10) : 1000 * ((idx % 5) + 1),

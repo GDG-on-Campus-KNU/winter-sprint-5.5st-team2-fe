@@ -81,10 +81,15 @@ function CartItemCard({
                       className={styles.couponButton}
                       onClick={() => onOpenCouponModal?.(item.cartItemId)}
                     >
-                      쿠폰 적용
+                      {item.appliedCouponId ? '쿠폰 변경' : '쿠폰 적용'}
                     </button>
                   </div>
                 </div>
+                {item.appliedCouponName ? (
+                  <p className={styles.appliedCouponText}>
+                    적용 쿠폰: {item.appliedCouponName}
+                  </p>
+                ) : null}
 
                 {isOptionEditorOpen ? (
                   <div className={styles.optionRow}>
