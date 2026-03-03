@@ -1,5 +1,8 @@
 .toast-container {
   position: fixed;
+  display : flex;
+  align-items:center;
+  gap:12px;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
@@ -37,6 +40,13 @@
   background: #fff;
   color: #333;
   border-color: #fff;
+}
+
+.toast-icon-img {
+  width: 24px;  /* 이미지 크기 조절 */
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0; /* 이미지가 찌그러지지 않게 */
 }
 
 /*
