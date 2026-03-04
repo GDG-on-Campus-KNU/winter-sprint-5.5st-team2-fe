@@ -30,9 +30,9 @@ export default function App() {
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/singup" element={<SingupPage />} />
-            <Route path="/singup/personal" element={<UserSingupPage />} />
-            <Route path="/singup/admin" element={<AdminSingupPage />} />
+            <Route path="/signup" element={<SingupPage />} />
+            <Route path="/signup/personal" element={<UserSingupPage />} />
+            <Route path="/signup/admin" element={<AdminSingupPage />} />
             <Route path="/mypage/admin" element={<AdminMyPage />} />
             <Route
               path="/mypage/admin/product_manage"

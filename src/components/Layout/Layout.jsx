@@ -9,9 +9,9 @@ const Layout = ({ children }) => {
 
   const hideFooterPaths = [
     '/login',
-    '/sing',
-    '/singup/personal',
-    'singup/admin',
+    '/signup',
+    '/signup/personal',
+    '/signup/admin',
   ];
 
   const shouldHideFooter = hideFooterPaths.includes(location.pathname);

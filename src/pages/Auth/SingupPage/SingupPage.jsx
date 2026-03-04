@@ -14,9 +14,9 @@ function SingupPage() {
 
   const handleNextPage = () => {
     if (role === 'admin') {
-      navigate('/singup/admin');
+      navigate('/signup/admin');
     } else {
-      navigate('/singup/personal');
+      navigate('/signup/personal');
     }
   };
 
