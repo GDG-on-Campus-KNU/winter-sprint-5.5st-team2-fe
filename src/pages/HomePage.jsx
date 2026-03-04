@@ -14,7 +14,7 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   const { admin } = useAuthStore();
-  const [sort, setSort] = useState('recommend');
+  const [sort, setSort] = useState('Oldest');
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState([]);
