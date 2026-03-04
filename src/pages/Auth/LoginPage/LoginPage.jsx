@@ -106,7 +106,7 @@ function LoginPage() {
         처음이신가요?{' '}
         <span
           onClick={() => {
-            navigate('/singup');
+            navigate('/signup');
           }}
         >
           회원가입

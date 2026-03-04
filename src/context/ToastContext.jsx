@@ -12,10 +12,9 @@ import errorIcon from '../assets/error.png';
 const ToastContext = createContext();
 
 export const ToastProvider = ({ children }) => {
-
   const icons = {
     success: successIcon,
-    error: errorIcon
+    error: errorIcon,
   };
   const [toast, setToast] = useState({
     show: false,
@@ -72,11 +71,11 @@ export const ToastProvider = ({ children }) => {
           className={`toast-container ${toast.type}`}
           style={{ animationDuration: `${toast.duration}ms` }}
         >
-         {icons[toast.type] && (
-            <img 
-              src={icons[toast.type]} 
-              alt={toast.type} 
-              className="toast-icon-img" 
+          {icons[toast.type] && (
+            <img
+              src={icons[toast.type]}
+              alt={toast.type}
+              className="toast-icon-img"
             />
           )}
           <p className="toast-message">{toast.message}</p>
