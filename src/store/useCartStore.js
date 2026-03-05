@@ -1,0 +1,261 @@
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+const getProductId = (product) =>
+  String(product?.productId ?? product?.id ?? product?.menuId ?? '');
+
+const toNumberId = (value) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const normalizeCartItemId = (value, fallback = null) => {
+  if (value === undefined || value === null || value === '') {
+    return fallback;
+  }
+
+  const numberId = toNumberId(value);
+  return numberId ?? String(value);
+};
+
+const isSameCartItemId = (left, right) => {
+  const leftNumberId = toNumberId(left);
+  const rightNumberId = toNumberId(right);
+
+  if (leftNumberId !== null && rightNumberId !== null) {
+    return leftNumberId === rightNumberId;
+  }
+
+  return String(left) === String(right);
+};
+
+const getCartItemId = (product, fallbackCartItemId) => {
+  const value = fallbackCartItemId ?? product?.cartItemId;
+  return normalizeCartItemId(value);
+};
+
+const normalizeCartItem = (product, quantity = 1, selectedSize, cartItemId) => {
+  const productId = getProductId(product);
+  const sizeOptions =
+    Array.isArray(product?.sizeOptions) && product.sizeOptions.length > 0
+      ? product.sizeOptions
+      : Array.isArray(product?.sizes) && product.sizes.length > 0
+        ? product.sizes
+        : ['FREE'];
+
+  const normalizedSelectedSize =
+    selectedSize ?? product?.selectedSize ?? sizeOptions[0];
+  const price = Number(product?.price ?? product?.originalPrice ?? 0);
+  const originalPrice = Number(product?.originalPrice ?? price);
+
+  return {
+    cartItemId: getCartItemId(product, cartItemId),
+    productId,
+    brand: product?.brand ?? '브랜드',
+    name: product?.name ?? '상품명',
+    imageUrl: product?.imageUrl ?? product?.image ?? '',
+    price,
+    originalPrice,
+    discountRate: Number(product?.discountRate ?? 0),
+    sizeOptions,
+    selectedSize: normalizedSelectedSize,
+    quantity: Math.max(1, Number(quantity) || 1),
+    appliedCouponId: product?.appliedCouponId ?? null,
+  };
+};
+
+const makeLocalCartItemId = (sequence) => `local-${sequence}`;
+
+const migrateCartItems = (items = []) =>
+  items.map((item, index) => {
+    if (
+      item?.cartItemId === undefined ||
+      item?.cartItemId === null ||
+      item?.cartItemId === ''
+    ) {
+      throw new Error(
+        `Invalid cart item at index ${index}: cartItemId is required.`,
+      );
+    }
+
+    const productId = String(item?.productId ?? item?.id ?? item?.menuId ?? '');
+    const fallbackSize =
+      item?.selectedSize ??
+      (Array.isArray(item?.sizeOptions) && item.sizeOptions.length > 0
+        ? item.sizeOptions[0]
+        : 'FREE');
+
+    return {
+      ...item,
+      cartItemId: normalizeCartItemId(item?.cartItemId),
+      productId,
+      selectedSize: fallbackSize,
+      sizeOptions:
+        Array.isArray(item?.sizeOptions) && item.sizeOptions.length > 0
+          ? item.sizeOptions
+          : ['FREE'],
+      quantity: Math.max(1, Number(item?.quantity) || 1),
+      appliedCouponId: item?.appliedCouponId ?? null,
+    };
+  });
+
+const useCartStore = create(
+  persist(
+    (set) => ({
+      cartItems: [],
+      nextLocalCartItemId: 1,
+      addItem: (product, quantity = 1, selectedSize, cartItemId) =>
+        set((state) => {
+          const nextItem = normalizeCartItem(
+            product,
+            quantity,
+            selectedSize,
+            cartItemId,
+          );
+
+          if (!nextItem.productId) {
+            return state;
+          }
+
+          const existingIndex = state.cartItems.findIndex(
+            (item) =>
+              item.productId === nextItem.productId &&
+              item.selectedSize === nextItem.selectedSize,
+          );
+
+          if (existingIndex !== -1) {
+            const updatedItems = [...state.cartItems];
+            updatedItems[existingIndex] = {
+              ...updatedItems[existingIndex],
+              quantity:
+                updatedItems[existingIndex].quantity + nextItem.quantity,
+              cartItemId:
+                nextItem.cartItemId ?? updatedItems[existingIndex].cartItemId,
+            };
+
+            return { cartItems: updatedItems };
+          }
+
+          const resolvedCartItemId =
+            nextItem.cartItemId ??
+            makeLocalCartItemId(state.nextLocalCartItemId);
+
+          return {
+            cartItems: [
+              ...state.cartItems,
+              { ...nextItem, cartItemId: resolvedCartItemId },
+            ],
+            nextLocalCartItemId: nextItem.cartItemId
+              ? state.nextLocalCartItemId
+              : state.nextLocalCartItemId + 1,
+          };
+        }),
+      removeItem: (targetCartItemId) =>
+        set((state) => ({
+          cartItems: state.cartItems.filter(
+            (item) => !isSameCartItemId(item.cartItemId, targetCartItemId),
+          ),
+        })),
+      updateItemQuantity: (targetCartItemId, delta) =>
+        set((state) => ({
+          cartItems: state.cartItems.map((item) =>
+            isSameCartItemId(item.cartItemId, targetCartItemId)
+              ? { ...item, quantity: Math.max(1, item.quantity + delta) }
+              : item,
+          ),
+        })),
+      updateItemSize: (targetCartItemId, selectedSize) =>
+        set((state) => {
+          const normalizedCartItemId = normalizeCartItemId(targetCartItemId);
+          const targetItem = state.cartItems.find((item) =>
+            isSameCartItemId(item.cartItemId, normalizedCartItemId),
+          );
+
+          if (!targetItem || targetItem.selectedSize === selectedSize) {
+            return state;
+          }
+
+          const duplicateItem = state.cartItems.find(
+            (item) =>
+              !isSameCartItemId(item.cartItemId, normalizedCartItemId) &&
+              item.productId === targetItem.productId &&
+              item.selectedSize === selectedSize,
+          );
+
+          if (!duplicateItem) {
+            return {
+              cartItems: state.cartItems.map((item) =>
+                isSameCartItemId(item.cartItemId, normalizedCartItemId)
+                  ? { ...item, selectedSize }
+                  : item,
+              ),
+            };
+          }
+
+          return {
+            cartItems: state.cartItems
+              .filter(
+                (item) =>
+                  !isSameCartItemId(item.cartItemId, normalizedCartItemId),
+              )
+              .map((item) =>
+                isSameCartItemId(item.cartItemId, duplicateItem.cartItemId)
+                  ? { ...item, quantity: item.quantity + targetItem.quantity }
+                  : item,
+              ),
+          };
+        }),
+      applyCouponToItem: (targetCartItemId, couponId) =>
+        set((state) => ({
+          cartItems: state.cartItems.map((item) =>
+            isSameCartItemId(item.cartItemId, targetCartItemId)
+              ? { ...item, appliedCouponId: couponId ? String(couponId) : null }
+              : item,
+          ),
+        })),
+
+      removeCouponFromItem: (targetCartItemId) =>
+        set((state) => ({
+          cartItems: state.cartItems.map((item) =>
+            isSameCartItemId(item.cartItemId, targetCartItemId)
+              ? { ...item, appliedCouponId: null }
+              : item,
+          ),
+        })),
+
+      setCartItems: (items = []) =>
+        set(() => ({
+          cartItems: Array.isArray(items) ? migrateCartItems(items) : [],
+          nextLocalCartItemId: 1,
+        })),
+
+      clearCart: () => set({ cartItems: [], nextLocalCartItemId: 1 }),
+    }),
+    {
+      name: 'cart-storage',
+      version: 2,
+      migrate: (persistedState, version) => {
+        if (!persistedState || typeof persistedState !== 'object') {
+          return { cartItems: [], nextLocalCartItemId: 1 };
+        }
+
+        if (version >= 2) {
+          return persistedState;
+        }
+
+        const migratedItems = migrateCartItems(persistedState.cartItems);
+
+        return {
+          ...persistedState,
+          cartItems: migratedItems,
+          nextLocalCartItemId:
+            Number(persistedState.nextLocalCartItemId) > 0
+              ? Number(persistedState.nextLocalCartItemId)
+              : 1,
+        };
+      },
+    },
+  ),
+);
+
+export default useCartStore;

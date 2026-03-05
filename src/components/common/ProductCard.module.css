@@ -1,0 +1,72 @@
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.featured .brand {
+  font-size: 14px;
+  font-weight: 700;
+  color: #575757;
+}
+
+.grid .brand {
+  font-size: 12px;
+  font-weight: 700;
+  color: #575757;
+}
+
+.discount {
+  color: #ff4848;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.priceRow {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.price {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.thumbWrap {
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.thumbWrap img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.grid .name {
+  -webkit-line-clamp: 2;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.featured .name {
+  -webkit-line-clamp: 1;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.grid .thumbWrap {
+  aspect-ratio: 1 / 1;
+}
+
+.featured .thumbWrap {
+  aspect-ratio: 3 / 4;
+}

@@ -1,0 +1,28 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page,
+.arrow {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  background-color: #fff;
+}
+
+.active {
+  font-weight: 700;
+}
+
+.page:disabled,
+.arrwo:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
